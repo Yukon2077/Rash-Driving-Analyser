@@ -1,0 +1,18 @@
+{% extends 'skeleton.html' %}
+
+{% block title %}Login - Rash Driving Analyser{% endblock title %}
+
+{% block body %}
+		
+	<form class="mx-auto my-5 p-4" method="post">
+		<fieldset>
+			<legend class="text-center">Login</legend>
+			<label class="form-label">Email</label>
+			<input type="email" name="email" class="form-control">
+			<label class="form-label">Password</label>
+			<input type="password" name="password" class="form-control"><br>
+			<input type="submit" value="Login" class="btn btn-steel w-100">
+		</fieldset>
+	</form>
+	
+{% endblock body %}
