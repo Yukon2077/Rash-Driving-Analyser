@@ -1,9 +1,43 @@
 {% extends 'skeleton.html' %}
 
-{% block title %}{{ user.id }} - Rash Driving Analyser{% endblock title %}
+{% block title %}{{ user.name }} - Rash Driving Analyser{% endblock title %}
 
 {% block body %}
 
-	Your user id is {{ user.id }}
+	<h2 class="text-center my-4">Welcome {{ user.name }}</h2>
+
+	<h4 class="mx-4">Statistics:</h4>
+
+	<table class="mx-5 my-2">
+		<tr>
+			<td>Number of Vehicles:</td>
+			<td>{{ vehicle_count }}</td>
+		</tr>
+	</table>
+
+	<div class="d-flex mx-2">
+		<h4 class="ms-3">Your vehicles:</h4>
+		<a href="/vehicle/add" class="ms-auto btn btn-steel">+ Add vehicle</a>
+	</div>
+
+	<div class="row row-cols-1 row-cols-sm-3 mx-1">
+
+		{% for vehicle in vehicles %}
+
+		<div class="col my-2">
+			<div class="card">
+				<img src="{{ '/uploads/' + vehicle.vehicle_id | string + '/' + vehicle.vehicle_image }}" class="img-fluid p-1">
+				<div class="card-body">
+					<a href="{{ '/vehicle/' + vehicle.vehicle_id | string }}" class="stretched-link">
+					<h5 class="card-title">{{ vehicle.vehicle_name }}</h5>
+					<p class="card-text">{{ vehicle.vehicle_number }}</p>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		{% endfor %}
+
+	</div>
 
 {% endblock body %}

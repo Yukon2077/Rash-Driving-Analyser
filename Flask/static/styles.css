@@ -21,3 +21,28 @@ form {
 	border-radius: 5px;
 	box-shadow: 0px 0px 4px;
 }
+
+.form-subtitle-link {
+	font-size: 14px;
+}
+
+.stretched-link {
+	color: black;
+	text-decoration: none;
+	transition-duration: 0.3s;
+}
+
+.stretched-link:hover {
+	color: black;
+	text-decoration: none;
+	transition-duration: 0.3s;
+}
+
+.card {
+	transition-duration: 0.3s;
+}
+
+.card:hover {
+	box-shadow: 0px 0px 12px;
+	transition-duration: 0.3s;
+}

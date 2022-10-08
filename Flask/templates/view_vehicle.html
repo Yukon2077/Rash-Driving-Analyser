@@ -1,0 +1,13 @@
+{% extends 'skeleton.html' %}
+
+{% block title %}vehicle_name - Rash Driving Analyser{% endblock title %}
+
+{% block body %}
+
+	<div class="m-3 row">
+		<h3>{{ vehicle.vehicle_name }}</h3>
+		<h4>{{ vehicle.vehicle_number }}</h4>
+		<img src="{{ '/uploads/' + vehicle.vehicle_id | string + '/' + vehicle.vehicle_image }}" class="img-fluid w-25">
+	</div>
+	
+{% endblock body %}

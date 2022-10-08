@@ -12,7 +12,21 @@
 			<label class="form-label">Password</label>
 			<input type="password" name="password" class="form-control"><br>
 			<input type="submit" value="Login" class="btn btn-steel w-100">
-		</fieldset>
+		</fieldset><br>
+
+		<a href="/register" class="form-subtitle-link">Don't have an account? Click here to register</a><br>
+
+		{% if error_code == 1 %}
+			<div class="alert alert-danger" role="alert">
+				Wrong email or password. Please try again.
+			</div>
+		{% endif %}
+		{% if error_code == 2 %}
+			<div class="alert alert-danger" role="alert">
+				Email doesn't exist. Register to login.
+			</div>
+		{% endif %}
+
 	</form>
 	
 {% endblock body %}

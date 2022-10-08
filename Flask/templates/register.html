@@ -17,6 +17,23 @@
 				<input type="password" name="confirm_password" class="form-control"><br>
 				<input type="submit" value="Register" class="btn btn-steel w-100">
 			</fieldset>
+
+			{% if error_code == 1 %}
+				<div class="alert alert-danger" role="alert">
+					Passwords don't match.
+				</div>
+			{% endif %}
+			{% if error_code == 2 %}
+				<div class="alert alert-danger" role="alert">
+					Email already exist.
+				</div>
+			{% endif %}
+			{% if error_code == 3 %}
+				<div class="alert alert-danger" role="alert">
+					Something went wrong. Please try again later.
+				</div>
+			{% endif %}
+
 		</form>
 
 {% endblock body %}

@@ -1,0 +1,32 @@
+{% extends 'skeleton.html' %}
+
+{% block title %}Add Vehicle - Rash Driving Analyser{% endblock title %}
+
+{% block body %}
+		
+	<form class="mx-auto my-5 p-4" method="post" enctype=multipart/form-data>
+		<fieldset>
+			<legend class="text-center">Add Vehicle</legend>
+			<label class="form-label">Vehicle name</label>
+			<input type="text" name="name" class="form-control">
+			<label class="form-label">Vehicle number</label>
+			<input type="text" name="number" class="form-control"><br>
+			<label class="form-label">Vehicle image</label>
+			<input type="file" name="image"><br><br>
+			<input type="submit" value="Add Vehicle" class="btn btn-steel w-100">
+		</fieldset><br>
+
+		{% if error_code == 1 %}
+			<div class="alert alert-danger" role="alert">
+				Wrong email or password. Please try again.
+			</div>
+		{% endif %}
+		{% if error_code == 2 %}
+			<div class="alert alert-danger" role="alert">
+				Email doesn't exist. Register to login.
+			</div>
+		{% endif %}
+
+	</form>
+	
+{% endblock body %}
