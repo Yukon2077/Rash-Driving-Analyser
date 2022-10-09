@@ -13,6 +13,8 @@ class Vehicle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
+        elevation: 12,
+        shadowColor: Colors.black,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [

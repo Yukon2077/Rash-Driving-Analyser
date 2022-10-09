@@ -1,9 +1,9 @@
-from flask import Flask, render_template, redirect, url_for, request, session, send_from_directory
+from flask import Flask, render_template, redirect, url_for, request, session, send_from_directory, jsonify, make_response
 from flask_restful import Resource, Api, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-import secrets, uuid, os
+import werkzeug, secrets, uuid, os
 
 app=Flask(__name__)
 
@@ -177,33 +177,125 @@ def allowed_file(filename):
 #========================================REST APIS========================================#
 
 parser = reqparse.RequestParser()
+parser.add_argument('token', type=str)
+parser.add_argument('name', type=str)
 parser.add_argument('email', type=str)
 parser.add_argument('password', type=str)
-#args = parser.parse_args()
+parser.add_argument('vehicle_id', type=str)
+parser.add_argument('vehicle_name', type=str)
+parser.add_argument('vehicle_number', type=str)
+parser.add_argument('vehicle_image', type=werkzeug.datastructures.FileStorage, location='files')
+parser.add_argument('driving_vehicle_speed', type=str)
+parser.add_argument('nearby_vehicle_speed', type=str)
+parser.add_argument('nearby_vehicle_distance', type=str)
+parser.add_argument('latitude', type=str)
+parser.add_argument('longitude', type=str)
 
 class LoginApi(Resource):
-    def post(self, email, password):
-        return '1234'
+    def post(self):
+        args = parser.parse_args()
+        email = args['email']
+        password = args['password']
+        user = User.query.filter_by(email = email).first()
+        if user:
+            if check_password_hash(user.password, password):
+                user.user_token = uuid.uuid4().hex
+                db.session.commit()
+                return make_response({ 'token': user.user_token })
+            else:
+                return make_response({'code': 1, 'message' : 'Wrong email or password' }, 404)
+        else:
+            return make_response({'code': 2, 'message' : 'Email doesn\'t exists' }, 404)
 
 class RegisterApi(Resource):
-    def post(self, name, email, password):
-        return '1234'
+    def post(self):
+        args = parser.parse_args()
+        name = args['name']
+        email = args['email']
+        password = args['password']
+        if not bool(User.query.filter_by(email = email).first()):
+            user = User(name = name, email = email, password = generate_password_hash(password))
+            db.session.add(user)
+            db.session.commit()
+            if user.user_id:
+                user.user_token = uuid.uuid4().hex
+                db.session.commit()
+                return make_response({ 'token': user.user_token })
+            else:
+                return make_response({'code': 1, 'message' : 'Something went wrong' }, 404)
+        else:
+            return make_response({'code': 2, 'message' : 'Email already exists' }, 404)
 
 class VehicleListApi(Resource):
-    def get(self, token):
-        return '1234'
+    def get(self):
+        args = parser.parse_args()
+        token = args['token']
+        user = User.query.filter_by(user_token = token).first()
+        if not bool(user):
+            vehicles = Vehicle.query.filter_by(user_id = user.user_id).all()
+            return make_response(jsonify(vehicles))
+        else:
+            return make_response({'code': 1, 'message' : 'Unknown user. Please login again' }, 404)
 
 class VehicleApi(Resource):
-    def get(self, token, id):
-        return '1234'
+    def get(self, vehicle_id):
+        args = parser.parse_args()
+        token = args['token']
+        user = User.query.filter_by(user_token = token).first()
+        if not bool(user):
+            vehicle = Vehicle.query.filter_by(user_id = user.user_id, vehicle_id = vehicle_id).all()
+            return make_response(jsonify(vehicle))
+        else:
+            return make_response({'code': 1, 'message' : 'Unknown user. Please login again' }, 404)
 
-    def post(self, token, id):
-        return '1234'
+class AddVehicleApi(Resource):
+    def post(self):
+        args = parser.parse_args()
+        vehicle_name = args['vehicle_name']
+        vehicle_number = args['vehicle_number']
+        vehicle_image = args['vehicle_image']
+        vehicle = Vehicle(
+            vehicle_name = vehicle_name, 
+            vehicle_number = vehicle_number, 
+            vehicle_image = vehicle_image)
+        db.session.add(vehicle)
+        db.session.commit()
+        if vehicle.vehicle_id:
+            return make_response({'code': 1, 'message' : 'Sucessfully added' }, 200)
+        else:
+            return make_response({'code': 2, 'message' : 'Something went wrong' }, 404)
+
+
+class DrivingDataApi(Resource):
+    def post(self):
+        args = parser.parse_args()
+        token = args['token']
+        driving_vehicle_speed = args['driving_vehicle_speed']
+        nearby_vehicle_speed = args['nearby_vehicle_speed']
+        nearby_vehicle_distance = args['nearby_vehicle_distance']
+        latitude = args['latitude']
+        longitude = args['longitude']
+        vehicle = Vehicle.query.filter_by(vehicle_token = token).first()
+        data = DrivingData(
+            vehicle_id = vehicle.vehicle_id,
+            driving_vehicle_speed = driving_vehicle_speed,
+            nearby_vehicle_speed = nearby_vehicle_speed,
+            nearby_vehicle_distance = nearby_vehicle_distance,
+            latitude = latitude,
+            longitude = longitude)
+        db.session.add(data)
+        db.session.commit()
+        if data.data_id:
+            return make_response({'code': 1, 'message' : 'Sucessfully added' }, 200)
+        else:
+            return make_response({'code': 2, 'message' : 'Something went wrong' }, 404)
 
 api.add_resource(LoginApi, '/api/login')
 api.add_resource(RegisterApi, '/api/register')
 api.add_resource(VehicleListApi, '/api/vehicle')
-api.add_resource(VehicleApi, '/api/vehicle/<int:id>')
+api.add_resource(AddVehicleApi, '/api/vehicle/add')
+api.add_resource(VehicleApi, '/api/vehicle/<int:vehicle_id>')
+api.add_resource(DrivingDataApi, '/api/data')
 
 #========================================GENERAL========================================#
 

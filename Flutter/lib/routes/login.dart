@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rash_driving_analyser/forms/login_form.dart';
 
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
@@ -18,32 +19,7 @@ class Login extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          Container(
-            margin: EdgeInsets.all(12),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Email',
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.all(12),
-            child: TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              ),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            height: 48,
-            margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-            child: ElevatedButton(
-                onPressed: () => login(context), child: Text('Login')),
-          ),
+          const LoginForm(),
           Container(
             margin: EdgeInsets.fromLTRB(12, 0, 12, 0),
             child: TextButton(
@@ -55,12 +31,7 @@ class Login extends StatelessWidget {
     );
   }
 
-  void login(BuildContext context) {
-    Navigator.of(context).pop();
-    Navigator.pushNamed(context, '/home');
-  }
-
   void register(BuildContext context) {
-    Navigator.pushNamed(context, '/register');
+    Navigator.pushReplacementNamed(context, '/register');
   }
 }
