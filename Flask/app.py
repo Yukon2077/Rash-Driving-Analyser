@@ -50,6 +50,12 @@ class DrivingData(db.Model):
     latitude = db.Column(db.Float, nullable = False)
     longitude = db.Column(db.Float, nullable = False)
 
+def row_to_dict(row):
+    d = {}
+    for column in row.__table__.columns:
+        d[column.name] = str(getattr(row, column.name))
+    return d
+
 #========================================WEB APPLICATION========================================#
 
 @app.route('/')
@@ -137,10 +143,7 @@ def add_vehicle():
                     )
                 db.session.add(vehicle)
                 db.session.commit()
-                path = os.path.join(
-                    app.config['UPLOAD_FOLDER'], 
-                    str(session['user_id']), 
-                    str(vehicle.vehicle_id))
+                path = app.config['UPLOAD_FOLDER']
                 if not os.path.exists(path):
                     os.makedirs(path)
                 image.save(os.path.join(path, filename))
@@ -161,14 +164,9 @@ def logout():
     session.pop('user_id')
     return redirect(url_for('login'))
 
-@app.route('/uploads/<int:vehicle_id>/<string:image>')
-def download_file(vehicle_id, image):
-    if 'user_id' in session:
-        return send_from_directory(app.config["UPLOAD_FOLDER"] + '\\' +
-            str(session['user_id']) + '\\' +
-            str(vehicle_id), image)
-    else:
-        return redirect(url_for('login'))
+@app.route('/uploads/<string:image>')
+def download_file(image):
+    return send_from_directory(app.config["UPLOAD_FOLDER"] + '\\', image)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -190,6 +188,8 @@ parser.add_argument('nearby_vehicle_speed', type=str)
 parser.add_argument('nearby_vehicle_distance', type=str)
 parser.add_argument('latitude', type=str)
 parser.add_argument('longitude', type=str)
+tokenParser = reqparse.RequestParser()
+tokenParser.add_argument('Authorization', location='headers')
 
 class LoginApi(Resource):
     def post(self):
@@ -226,14 +226,18 @@ class RegisterApi(Resource):
         else:
             return make_response({'code': 2, 'message' : 'Email already exists' }, 404)
 
+
 class VehicleListApi(Resource):
     def get(self):
-        args = parser.parse_args()
-        token = args['token']
+        args = tokenParser.parse_args()
+        token = args['Authorization'].split()[1]
         user = User.query.filter_by(user_token = token).first()
-        if not bool(user):
+        if bool(user):
             vehicles = Vehicle.query.filter_by(user_id = user.user_id).all()
-            return make_response(jsonify(vehicles))
+            vehicle_as_json = []
+            for i in vehicles:
+                vehicle_as_json.append(row_to_dict(i))
+            return make_response(vehicle_as_json)
         else:
             return make_response({'code': 1, 'message' : 'Unknown user. Please login again' }, 404)
 

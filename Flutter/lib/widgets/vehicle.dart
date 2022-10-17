@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rash_driving_analyser/apis/api.dart';
 
 class Vehicle extends StatelessWidget {
   String src;
@@ -19,8 +20,8 @@ class Vehicle extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
-              child: Image.network(src),
               margin: EdgeInsets.all(4),
+              child: Image.network('${Api.baseUrl}/uploads/$src'),
             ),
             Container(
               margin: EdgeInsets.fromLTRB(4, 4, 4, 4),

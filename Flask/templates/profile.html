@@ -26,7 +26,7 @@
 
 		<div class="col my-2">
 			<div class="card">
-				<img src="{{ '/uploads/' + vehicle.vehicle_id | string + '/' + vehicle.vehicle_image }}" class="img-fluid p-1">
+				<img src="{{ '/uploads/' + vehicle.vehicle_image }}" class="img-fluid p-1">
 				<div class="card-body">
 					<a href="{{ '/vehicle/' + vehicle.vehicle_id | string }}" class="stretched-link">
 					<h5 class="card-title">{{ vehicle.vehicle_name }}</h5>
