@@ -155,7 +155,8 @@ def add_vehicle():
 def view_vehicle(vehicle_id):
     if 'user_id' in session:
         vehicle = Vehicle.query.filter_by(user_id = session['user_id'], vehicle_id = vehicle_id).first()
-        return render_template('view_vehicle.html', vehicle = vehicle)
+        data = DrivingData.query.filter_by(vehicle_id = vehicle.vehicle_id).all()
+        return render_template('view_vehicle.html', vehicle = vehicle, data = data)
     else:
         return redirect(url_for('login'))
 
@@ -243,12 +244,13 @@ class VehicleListApi(Resource):
 
 class VehicleApi(Resource):
     def get(self, vehicle_id):
-        args = parser.parse_args()
-        token = args['token']
+        args = tokenParser.parse_args()
+        token = args['Authorization'].split()[1]
         user = User.query.filter_by(user_token = token).first()
-        if not bool(user):
-            vehicle = Vehicle.query.filter_by(user_id = user.user_id, vehicle_id = vehicle_id).all()
-            return make_response(jsonify(vehicle))
+        if bool(user):
+            vehicle = Vehicle.query.filter_by(user_id = user.user_id, vehicle_id = vehicle_id).first()
+            data = DrivingData.query.filter_by(vehicle_id = vehicle.vehicle_id).all()
+            return make_response(row_to_dict(vehicle))
         else:
             return make_response({'code': 1, 'message' : 'Unknown user. Please login again' }, 404)
 
@@ -293,6 +295,8 @@ class DrivingDataApi(Resource):
             return make_response({'code': 1, 'message' : 'Sucessfully added' }, 200)
         else:
             return make_response({'code': 2, 'message' : 'Something went wrong' }, 404)
+
+
 
 api.add_resource(LoginApi, '/api/login')
 api.add_resource(RegisterApi, '/api/register')

@@ -5,9 +5,46 @@
 {% block body %}
 
 	<div class="m-3 row">
-		<h3>{{ vehicle.vehicle_name }}</h3>
-		<h4>{{ vehicle.vehicle_number }}</h4>
-		<img src="{{ '/uploads/' + vehicle.vehicle_image }}" class="img-fluid w-25">
+		<div class="col">
+			<h3>{{ vehicle.vehicle_name }}</h3>
+			<h4>{{ vehicle.vehicle_number }}</h4>
+			{% if data  %}
+			<h5>Last incident: {{ data[-1] }}</h5>
+			<h5>Last location: {{ data[-1].latitude | string + ' | ' + data[-1].longitude | string }}</h5>
+			{% else %}
+			<h5>No driving data is available</h5>
+			{% endif %}
+		</div>
+		
+		<img src="{{ '/uploads/' + vehicle.vehicle_image }}" class=" w-25 col">
+	</div>
+
+	<div class="p-5">
+		<h3>Driving Data</h3>
+		<table class="table">
+			<tr>
+				<th>data_id</th>
+				<th>driving_vehicle_speed</th>
+				<th>nearby_vehicle_speed</th>
+				<th>nearby_vehicle_distance</th>
+				<th>latitude</th>
+				<th>longitude</th>
+			</tr>
+
+			{% for i in data %}
+
+				<tr>
+					<td>{{ i.data_id }}</td>
+					<td>{{ i.driving_vehicle_speed }}</td>
+					<td>{{ i.nearby_vehicle_speed }}</td>
+					<td>{{ i.nearby_vehicle_distance }}</td>
+					<td>{{ i.latitude }}</td>
+					<td>{{ i.longitude }}</td>
+				</tr>
+
+			{% endfor %}
+
+		</table>
 	</div>
 	
 {% endblock body %}

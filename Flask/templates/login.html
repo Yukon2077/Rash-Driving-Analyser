@@ -8,13 +8,13 @@
 		<fieldset>
 			<legend class="text-center">Login</legend>
 			<label class="form-label">Email</label>
-			<input type="email" name="email" class="form-control">
+			<input type="email" name="email" class="form-control" required>
 			<label class="form-label">Password</label>
-			<input type="password" name="password" class="form-control"><br>
+			<input type="password" name="password" class="form-control" required><br>
 			<input type="submit" value="Login" class="btn btn-steel w-100">
 		</fieldset><br>
 
-		<a href="/register" class="form-subtitle-link">Don't have an account? Click here to register</a><br>
+		<a href="/register" class=" text-center form-subtitle-link">Don't have an account? Click here to register</a><br>
 
 		{% if error_code == 1 %}
 			<div class="alert alert-danger" role="alert">

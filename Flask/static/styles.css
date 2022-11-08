@@ -1,29 +1,61 @@
+html {
+  min-height: 100%;
+}
+
+body {
+	background: linear-gradient(to bottom right, steelblue, 15%, lightsteelblue, 85%, steelblue);
+}
+
 nav {
-	background-color: lightsteelblue;
+	background-color: #121212;
 	box-shadow: 0px 0px 8px;
+}
+
+.btn {
+	border-radius: 2px;
 }
 
 .btn-steel {
 	color: black;
-	background-color: lightsteelblue;
+	background-color: #BBDDFF;
+	border-color: black;
+	box-shadow: 0px 2px 4px;
+	transition-duration: 0.2s;
 
 }
 
 .btn-steel:hover {
-	color: white;
-	background-color: steelblue;
-	box-shadow: 0px 0px 4px black;
+	color: black;
+	background-color: #DDEEFF;
+	border-color: black;
+	box-shadow: 0px 8px 16px black;
 }
 
 form {
 	max-width: 22rem;
 	background-color: rgba(0, 0, 0, 0.10);
-	border-radius: 5px;
-	box-shadow: 0px 0px 4px;
+	border-radius: 2px;
+	box-shadow: 0px 2px 8px;
 }
 
 .form-subtitle-link {
+	padding: 4px;
 	font-size: 14px;
+	text-decoration: none;
+}
+
+.form-subtitle-link:hover {
+	text-decoration: underline;
+}
+
+.form-control {
+	border-color: black;
+	border-radius: 2px;
+}
+
+.form-label {
+	margin-top: 8px;
+	margin-bottom: 2px;
 }
 
 .stretched-link {
@@ -39,10 +71,12 @@ form {
 }
 
 .card {
+	box-shadow: 0px 2px 4px;
 	transition-duration: 0.3s;
 }
 
 .card:hover {
-	box-shadow: 0px 0px 12px;
+	background-color: #DDEEFF;
+	box-shadow: 0px 8px 16px;
 	transition-duration: 0.3s;
 }

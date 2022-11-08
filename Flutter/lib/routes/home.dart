@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:rash_driving_analyser/models/vehicle_model.dart';
 import 'package:rash_driving_analyser/widgets/vehicle.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../apis/api.dart';
 
@@ -17,7 +14,6 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  var token = '';
   late Future<List<VehicleModel>> vehicleFuture;
 
   @override
@@ -26,19 +22,23 @@ class HomeState extends State<Home> {
     vehicleFuture = Api.getVehicles();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.of(context).pushNamed('/profile'),
+            icon: Icon(Icons.account_circle),
+          )
+        ],
       ),
       floatingActionButton: Container(
-        margin: EdgeInsets.all(16),
+
         child: FloatingActionButton(
-          onPressed: null,
-          child: Icon(Icons.add),
+          onPressed: () => Navigator.of(context).pushNamed('/vehicle/add'),
+          child: const Icon(Icons.add),
         ),
       ),
       body: Center(
@@ -66,10 +66,7 @@ class HomeState extends State<Home> {
                       return ListView.builder(
                           itemCount: vehicles.length,
                           itemBuilder: (context, index) {
-                            return Vehicle(
-                                src: vehicles[index].vehicleImage,
-                                name: vehicles[index].vehicleName,
-                                number: vehicles[index].vehicleNumber);
+                            return Vehicle(vehicle: vehicles[index],);
                           });
                     }
                     if (snapshot.hasError) {

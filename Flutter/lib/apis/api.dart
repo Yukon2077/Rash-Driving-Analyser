@@ -44,9 +44,8 @@ class Api {
   static Future<List<VehicleModel>> getVehicles() async {
     final prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token') ?? '';
-    if (token == '') {
-      throw 'Token missing. Please login again';
-    }
+    if (token == '') throw 'Token missing. Please login again';
+
     var response = await http.get(
       Uri.parse('${baseUrl}api/vehicle'),
       headers: <String, String>{
@@ -64,6 +63,21 @@ class Api {
       var body = jsonDecode(response.body);
       throw body['message'];
     }
+  }
+
+  static Future<String> getVehicleData(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? '';
+    if (token == '') throw 'Token missing. Please login again';
+
+    var response = await http.get(
+      Uri.parse('${baseUrl}api/vehicle/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization' : 'Bearer $token'
+      },
+    );
+
   }
 
 }

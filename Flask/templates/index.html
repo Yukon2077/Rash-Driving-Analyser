@@ -3,10 +3,26 @@
 {% block title %}Rash Driving Analyser{% endblock title %}
 
 {% block body %}
-	<div class="text-center p-5">
-		<h1>Rash Driving Analyser</h1>
-		<p>This project is gonna anlayse your vehicle and show it to your face.</p>
-		<a href="/login" class="btn btn-steel">Login</a>
-		<a href="/register" class="btn btn-steel">Register</a>
+
+	<div class="d-flex flex-column align-items-center justify-content-center">
+
+		<div class="text-center w-100 p-5">
+			<h1>Rash Driving Analyser</h1>
+			<p>Analyse your vehicle</p>
+			<a href="/login" class="btn btn-steel">Login</a>
+			<a href="/register" class="btn btn-steel">Register</a><br><br>
+		</div>
+
+		<div class="text-start w-100 p-5">
+			<h3>What it does</h3>
+			<p>Rash Driving Analyser can record all the driving data of the driver like speed, time, acceleration, braking, fluctuations and use it to identify the driver’s skill.</p>
+		</div>
+
+		<div class="text-end w-100 p-5">
+			<h3>Get to know if your vehicle is being rash driven</h3>
+			<p>Alert messages to the organisations/owners if the driver reaches the peak of rash driving.</p>
+		</div>
+
 	</div>
+	
 {% endblock body %}
