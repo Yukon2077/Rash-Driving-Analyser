@@ -12,29 +12,28 @@ nav {
 }
 
 .btn {
-	border-radius: 2px;
+	border-radius: 4px;
 }
 
 .btn-steel {
 	color: black;
 	background-color: #BBDDFF;
-	border-color: black;
-	box-shadow: 0px 2px 4px;
-	transition-duration: 0.2s;
+	border-color: #7799BB;
+	transition-duration: 0.3s;
 
 }
 
 .btn-steel:hover {
 	color: black;
 	background-color: #DDEEFF;
-	border-color: black;
-	box-shadow: 0px 8px 16px black;
+	border-color: #7799BB;
+	box-shadow: 0px 4px 8px black;
 }
 
 form {
 	max-width: 22rem;
 	background-color: rgba(0, 0, 0, 0.10);
-	border-radius: 2px;
+	border-radius: 4px;
 	box-shadow: 0px 2px 8px;
 }
 
@@ -50,7 +49,7 @@ form {
 
 .form-control {
 	border-color: black;
-	border-radius: 2px;
+	border-radius: 4px;
 }
 
 .form-label {
@@ -71,12 +70,60 @@ form {
 }
 
 .card {
-	box-shadow: 0px 2px 4px;
+	background-color: #BBDDFF;
+	border-color: #7799BB;
+	border-radius: 4px;
 	transition-duration: 0.3s;
 }
 
 .card:hover {
 	background-color: #DDEEFF;
-	box-shadow: 0px 8px 16px;
+	border-color: #7799BB;
+	box-shadow: 0px 4px 8px;
+}
+
+.car-image {
+	border-color: black;
+	border-radius: 4px;
+}
+
+.bi {
+	color: black;
 	transition-duration: 0.3s;
+}
+
+.bi:hover {
+	color: #484848;
+}
+
+.table {
+	color: black;
+	border-color: black;
+}
+
+.car-picture {
+	margin-right: 8px;
+	max-height: 97px;
+	border-radius: 4px;
+	border-color: black;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.level-box {
+	background-color: #50C878;
+	color: black;
+	border-radius: 4px;
+	padding: 12px;
+	max-width: 128px;
+	text-align: center;
+	border-color: #35A556;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.percentage, .level {
+	text-align: center;
+	font-size: 24px;
+	font-weight: 700;
 }
