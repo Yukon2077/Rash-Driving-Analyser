@@ -9,6 +9,9 @@ class User(db.Model):
     user_token = db.Column(db.String, unique=True)
     vehicles = db.relationship('Vehicle', backref='user')
 
+    def __repr__(self):
+        return '<User %r>' % self.name
+
 
 class Vehicle(db.Model):
     __table_args__ = (db.UniqueConstraint('vehicle_id', 'user_id', 'vehicle_image'),)
@@ -20,6 +23,9 @@ class Vehicle(db.Model):
     vehicle_token = db.Column(db.String, unique=True)
     data = db.relationship('DrivingData', backref='vehicle')
 
+    def __repr__(self):
+        return '<User %r>' % self.vehicle_name
+
 
 class DrivingData(db.Model):
     data_id = db.Column(db.Integer, primary_key=True)
@@ -29,3 +35,6 @@ class DrivingData(db.Model):
     nearby_vehicle_distance = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return '<User %r>' % self.data_id

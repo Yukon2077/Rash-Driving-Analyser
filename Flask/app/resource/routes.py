@@ -85,8 +85,11 @@ class VehicleApi(Resource):
         user = User.query.filter_by(user_token=token).first()
         if bool(user):
             vehicle = Vehicle.query.filter_by(user_id=user.user_id, vehicle_id=vehicle_id).first()
-            data = DrivingData.query.filter_by(vehicle_id=vehicle.vehicle_id).all()
-            return make_response(row_to_dict(vehicle))
+            if vehicle:
+                data = DrivingData.query.filter_by(vehicle_id=vehicle.vehicle_id).all()
+                return make_response(row_to_dict(vehicle))
+            else:
+                return make_response({'code': 2, 'message': 'Vehicle not found'}, 404)
         else:
             return make_response({'code': 1, 'message': 'Unknown user. Please login again'}, 404)
 
