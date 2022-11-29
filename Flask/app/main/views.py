@@ -1,11 +1,12 @@
 import os
 import uuid
 
-from flask import render_template, session, request, redirect, url_for, send_from_directory, current_app
+from flask import render_template, session, request, redirect, url_for, send_from_directory, current_app, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
 from . import main
+from .forms import LoginForm, RegisterForm, ConnectForm
 from .. import db
 from ..models import User, Vehicle, DrivingData
 
@@ -18,91 +19,96 @@ def index():
 @main.route('/login', methods=['GET', 'POST'])
 def login():
     if 'user_id' not in session:
-        if request.method == 'GET':
-            return render_template('login.html')
-        else:
-            email = request.form.get('email')
-            password = request.form.get('password')
+        login_form = LoginForm()
+        if login_form.validate_on_submit():
+            email = login_form.email.data
+            password = login_form.password.data
             user = User.query.filter_by(email=email).first()
             if user:
                 if check_password_hash(user.password, password):
                     session['user_id'] = user.user_id
-                    return redirect(url_for('.profile'))
+                    return redirect(url_for('.home'))
                 else:
-                    return render_template('login.html', error_code=1)
+                    flash('Wrong password or email')
+                    return redirect(url_for('.login'))  # Wrong password...............or email, I dunno
             else:
-                return render_template('login.html', error_code=2)
+                flash('Email doesn\'t exists')
+                return redirect(url_for('.login'))  # Email doesn't exists
+        return render_template('login.html', login_form=login_form)
     else:
-        return redirect(url_for('.profile'))
+        return redirect(url_for('.home'))
 
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
     if 'user_id' not in session:
-        if request.method == 'GET':
-            return render_template('register.html')
-        else:
-            name = request.form.get('name')
-            email = request.form.get('email')
-            password = request.form.get('password')
-            confirm_password = request.form.get('confirm_password')
-            if password != confirm_password:
-                return render_template('register.html', error_code=1)
+        register_form = RegisterForm()
+        if register_form.validate_on_submit():
+            name = register_form.name.data
+            email = register_form.email.data
+            password = register_form.password.data
             if not bool(User.query.filter_by(email=email).first()):
-                user = User(name=name, email=email, password=generate_password_hash(password))
+                user = User(
+                    name=name,
+                    email=email,
+                    password=generate_password_hash(password)
+                )
                 db.session.add(user)
                 db.session.commit()
                 if user.user_id:
                     session['user_id'] = user.user_id
-                    return redirect(url_for('.profile'))
+                    return redirect(url_for('.home'))
                 else:
-                    return render_template('register.html', error_code=3)
+                    flash('Something went wrong')
+                    return redirect(url_for('.register'))
             else:
-                return render_template('register.html', error_code=2)
+                flash('Email already exists')
+                return redirect(url_for('.register'))
+        return render_template('register.html',
+                               register_form=register_form)
     else:
-        return redirect(url_for('.profile'))
+        return redirect(url_for('.home'))
 
 
-@main.route('/profile')
-def profile():
+@main.route('/home')
+def home():
     if 'user_id' in session:
         user = User.query.with_entities(User.name, User.email).filter_by(user_id=session['user_id']).first()
         vehicles = Vehicle.query.filter_by(user_id=session['user_id']).all()
         vehicle_count = Vehicle.query.filter_by(user_id=session['user_id']).count()
-        return render_template('profile.html', user=user, vehicles=vehicles, vehicle_count=vehicle_count)
+        return render_template('home.html', user=user, vehicles=vehicles, vehicle_count=vehicle_count)
     else:
         return redirect(url_for('.login'))
 
 
-@main.route('/vehicle/add', methods=['GET', 'POST'])
-def add_vehicle():
+@main.route('/connect', methods=['GET', 'POST'])
+def connect():
     if 'user_id' in session:
-        if request.method == 'GET':
-            return render_template('add_vehicle.html')
-        else:
-            name = request.form.get('name')
-            number = request.form.get('number')
-            image = request.files.get('image')
-            if name == '' or number == '':
-                return render_template('add_vehicle.html', error_code=1)
-            if image.filename == '':
-                return render_template('add_vehicle.html', error_code=2)
-            if image and allowed_file(image.filename):
+        connect_form = ConnectForm()
+        current_app.logger.debug('before validation')
+        if connect_form.validate_on_submit():
+            current_app.logger.debug('validation started')
+            name = connect_form.vehicle_name.data
+            image = connect_form.vehicle_image.data
+            vehicle = Vehicle(
+                user_id=session['user_id'],
+                vehicle_name=name,
+            )
+            current_app.logger.debug('before image check')
+            if image:
+                current_app.logger.debug('image checked and in process')
                 image.filename = str(uuid.uuid4()) + '.' + image.filename.rsplit('.', 1)[1]
                 filename = secure_filename(image.filename)
-                vehicle = Vehicle(
-                    user_id=session['user_id'],
-                    vehicle_image=filename,
-                    vehicle_name=name,
-                    vehicle_number=number,
-                )
-                db.session.add(vehicle)
-                db.session.commit()
                 path = current_app.config['UPLOAD_FOLDER']
                 if not os.path.exists(path):
                     os.makedirs(path)
                 image.save(os.path.join(path, filename))
-                return redirect(url_for('.profile'))
+                vehicle.vehicle_image = filename
+            db.session.add(vehicle)
+            db.session.commit()
+            current_app.logger.debug('vehicle added')
+            return redirect(url_for('.home'))
+        return render_template('connect.html', connect_form=connect_form)
     else:
         return redirect(url_for('.login'))
 
@@ -112,14 +118,9 @@ def view_vehicle(vehicle_id):
     if 'user_id' in session:
         vehicle = Vehicle.query.filter_by(user_id=session['user_id'], vehicle_id=vehicle_id).first()
         data = DrivingData.query.filter_by(vehicle_id=vehicle.vehicle_id).all()
-        return render_template('view_vehicle.html', vehicle=vehicle, data=data)
+        return render_template('vehicle.html', vehicle=vehicle, data=data)
     else:
         return redirect(url_for('.login'))
-
-
-@main.route('/contact')
-def contact():
-    return render_template('contact.html')
 
 
 @main.route('/logout')
@@ -137,10 +138,3 @@ def download_file(image):
 def after_request(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     return response
-
-
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
-
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

@@ -1,0 +1,31 @@
+{% extends 'skeleton.html' %}
+
+{% block title %}{{ user.name }} - Rash Driving Analyser{% endblock title %}
+
+{% block body %}
+
+<section>
+    <h2>Vehicles ({{ vehicle_count }})</h2>
+    <div class="grid-vehicle-list">
+
+        <a href="/connect" class="card card-plus">
+            <span><i class="bi bi-plus-lg"></i> Add new vehicle</span>
+        </a>
+
+        {% for vehicle in vehicles %}
+
+        <a href="/vehicle/{{ vehicle.vehicle_id }}" class="card">
+            {% if vehicle.vehicle_image != None %}
+            <img src="{{ '/uploads/' + vehicle.vehicle_image }}" class="card-image">
+            {% else %}
+            <img src="{{ url_for('static', filename='/images/placeholder.jpg') }}" class="card-image">
+            {% endif %}
+            <p class="card-body">{{ vehicle.vehicle_name }}</p>
+        </a>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+{% endblock body %}

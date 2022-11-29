@@ -4,30 +4,24 @@
 
 {% block body %}
 
-<form class="mx-auto my-5 p-4" method="post">
-    <fieldset>
-        <legend class="text-center">Login</legend>
-        <label class="form-label">Email</label>
-        <input type="email" name="email" class="form-control" required>
-        <label class="form-label">Password</label>
-        <input type="password" name="password" class="form-control" required><br>
-        <input type="submit" value="Login" class="btn btn-steel w-100">
-    </fieldset>
-    <br>
-
-    <a href="/register" class=" text-center form-subtitle-link">Don't have an account? Click here to register</a><br>
-
-    {% if error_code == 1 %}
-    <div class="alert alert-danger" role="alert">
-        Wrong email or password. Please try again.
-    </div>
+<div class="form">
+    <h2>Login</h2>
+    <form method="post">
+        {{ login_form.csrf_token }}
+        {{ login_form.email(id="email", class="input-box", placeholder="E-mail") }}
+        {{ login_form.password(id="password", class="input-box", placeholder="Password") }}
+        {{ login_form.submit(class="button", id="login-button") }}
+    </form>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
     {% endif %}
-    {% if error_code == 2 %}
-    <div class="alert alert-danger" role="alert">
-        Email doesn't exist. Register to login.
-    </div>
-    {% endif %}
+    {% endwith %}
 
-</form>
+</div>
 
 {% endblock body %}

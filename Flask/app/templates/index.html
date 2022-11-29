@@ -4,26 +4,67 @@
 
 {% block body %}
 
-<div class="d-flex flex-column align-items-center justify-content-center">
+<section class="text-center display">
+    <h1>Rash Driving Analyser</h1>
+    <h4>Analyse your driving skills</h4>
 
-    <div class="text-center w-100 p-5">
-        <h1>Rash Driving Analyser</h1>
-        <p>Analyse your vehicle</p>
-        <a href="/login" class="btn btn-steel">Login</a>
-        <a href="/register" class="btn btn-steel">Register</a><br><br>
+    {% if 'user_id' not in session %}
+    <a href='/login' class="button">Login</a><a href='/register' class="button">Register</a>
+    {% else %}
+    <a href='/home' class="button">Home</a>
+    {% endif %}
+
+</section>
+
+<section>
+    <h2>What this is about</h2>
+    <p>Rash driving is a significant traffic violation in most states. Rash driving is defined as driving with wilful
+        disregard for the safety of people or property. When convicted of reckless driving, the driver can face severe
+        penalties such as fines, license suspension, and even jail time. The intuition of this project is to enhance the
+        performance of driving risk analysis by enlarging the influential factors set and finding a sophisticated
+        analysing method</p>
+</section>
+
+<section>
+    <h2>How it works</h2>
+    <p>This product records all driving data and upload it to the cloud, from where it willl analysed and processed
+        using machine learning algorithms. Using GPS Module, current position and velocity of the vehicle will be
+        calculated, using the velocity, distance calculations sudden speed Variations can be detected. Close calls of
+        the vehicle can be detected by using sensors and the distance between them is also calculated to analyse whether
+        the vehicle is rash driving and overtaking vehicles. The raw data obtained from the vehicle module is used to
+        classify whether the incident occurred is to be considered as rash driving or not using logistic regression. A
+        clear analysis of the driver about rash driving can be viewed from the Mobile Application.
+    </p>
+</section>
+
+<!-- <footer>
+    <a href="/" class="footer-logo nav-link">Rash Driving Analyser</a>
+    <div>
+        <h3>Navigation:</h3>
+        <div class="flex flex-column">
+            <a href="" class="nav-link">Home</a>
+            <a href="" class="nav-link">Login</a>
+            <a href="" class="nav-link">Register</a>
+            <a href="" class="nav-link">About Us</a>
+        </div>
     </div>
-
-    <div class="text-start w-100 p-5">
-        <h3>What it does</h3>
-        <p>Rash Driving Analyser can record all the driving data of the driver like speed, time, acceleration, braking,
-            fluctuations and use it to identify the driver’s skill.</p>
+    <div>
+        <h3>Developers:</h3>
+        <div class="flex">
+            <div>Syed Anas Ahmed<br>
+                <a href="" class="nav-link"><i class="bi bi-envelope"></i></a>
+                <a href="" class="nav-link"><i class="bi bi-whatsapp"></i></a>
+            </div>
+            <div>Sreejith S<br>
+                <a href="" class="nav-link"><i class="bi bi-envelope"></i></a>
+                <a href="" class="nav-link"><i class="bi bi-whatsapp"></i></a>
+            </div>
+            <div>Yuvankumar R<br>
+                <a href="" class="nav-link"><i class="bi bi-envelope"></i></a>
+                <a href="" class="nav-link"><i class="bi bi-whatsapp"></i></a>
+            </div>
+        </div>
     </div>
-
-    <div class="text-end w-100 p-5">
-        <h3>Get to know if your vehicle is being rash driven</h3>
-        <p>Alert messages to the organisations/owners if the driver reaches the peak of rash driving.</p>
-    </div>
-
-</div>
+</footer> -->
 
 {% endblock body %}

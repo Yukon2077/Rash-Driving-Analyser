@@ -1,0 +1,100 @@
+{% extends 'skeleton.html' %}
+
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+{% if vehicle.vehicle_image != None %}
+<style type="text/css">
+		body {
+			background: linear-gradient(rgba(200, 227, 255, 0.75), rgba(200, 227, 255, 0.75)), url("{{ '/uploads/' + vehicle.vehicle_image }}");
+			background-size:cover;
+			background-position: center center;
+		}
+</style>
+{% endif %}
+
+{% endblock %}
+
+{% block title %}{{ vehicle.vehicle_name }} - Rash Driving Analyser{% endblock title %}
+
+{% block body %}
+
+<section class="flex-start">
+    <h2>{{ vehicle.vehicle_name }}</h2>
+</section>
+
+<section>
+    <h2>Analysis</h2>
+    <div class="grid-analysis-list">
+
+        <div class="card-analysis">
+            <div id="PieChart" class="card-image"></div>
+            <script type="text/javascript">
+
+			      google.charts.load('current', {'packages':['corechart']});
+			      google.charts.setOnLoadCallback(drawChart);
+
+			      function drawChart() {
+			        var data = new google.visualization.DataTable();
+			        data.addColumn('string', 'Topping');
+			        data.addColumn('number', 'Slices');
+			        data.addRows([
+			          ['Mushrooms', 3],
+			          ['Onions', 1],
+			          ['Olives', 1],
+			          ['Zucchini', 1],
+			          ['Pepperoni', 2]
+			        ]);
+
+			        var options = {
+			        	'title':'How Much Pizza I Ate Last Night',
+			        	backgroundColor: {
+			        		fillOpacity: 0,
+			        	},
+			    	};
+
+			        var chart = new google.visualization.PieChart(document.getElementById('PieChart'));
+			        chart.draw(data, options);
+			      }
+
+            </script>
+        </div>
+
+        <div class="card-analysis">
+            <div id="BarChart" class="card-image"></div>
+            <script type="text/javascript">
+
+			      google.charts.load('current', {'packages':['corechart']});
+			      google.charts.setOnLoadCallback(drawChart);
+
+			      function drawChart() {
+			        var data = new google.visualization.DataTable();
+			        data.addColumn('string', 'Topping');
+			        data.addColumn('number', 'Slices');
+			        data.addRows([
+			          ['Mushrooms', 3],
+			          ['Onions', 1],
+			          ['Olives', 1],
+			          ['Zucchini', 1],
+			          ['Pepperoni', 2]
+			        ]);
+
+			        var options = {
+			        	'title':'How Much Pizza I Ate Last Night',
+			        	backgroundColor: {
+			        		fillOpacity: 0,
+			        	},
+			    	};
+
+			        var chart = new google.visualization.BarChart(document.getElementById('BarChart'));
+			        chart.draw(data, options);
+			      }
+
+            </script>
+        </div>
+
+
+    </div>
+</section>
+
+{% endblock body %}

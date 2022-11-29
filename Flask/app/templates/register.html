@@ -4,36 +4,25 @@
 
 {% block body %}
 
-<form class="mx-auto my-5 p-4" method="post">
-    <fieldset>
-        <legend class="text-center">Register</legend>
-        <label class="form-label">Name</label>
-        <input type="name" name="name" class="form-control" required>
-        <label class="form-label">Email</label>
-        <input type="email" name="email" class="form-control" required>
-        <label class="form-label">Password</label>
-        <input type="password" name="password" class="form-control" required>
-        <label class="form-label">Confirm Password</label>
-        <input type="password" name="confirm_password" class="form-control" required><br>
-        <input type="submit" value="Register" class="btn btn-steel w-100">
-    </fieldset>
-
-    {% if error_code == 1 %}
-    <div class="alert alert-danger" role="alert">
-        Passwords don't match.
-    </div>
+<div class="form">
+    <h2>Register</h2>
+    <form method="post">
+        {{ register_form.csrf_token }}
+        {{ register_form.name(id="name", class="input-box", placeholder="Name") }}
+        {{ register_form.email(id="email", class="input-box", placeholder="E-mail") }}
+        {{ register_form.password(id="password", class="input-box", placeholder="Password") }}
+        {{ register_form.verify_password(id="verify_password", class="input-box", placeholder="Verify Password") }}
+        {{ register_form.submit(class="button", id="register-button") }}
+    </form>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
     {% endif %}
-    {% if error_code == 2 %}
-    <div class="alert alert-danger" role="alert">
-        Email already exist.
-    </div>
-    {% endif %}
-    {% if error_code == 3 %}
-    <div class="alert alert-danger" role="alert">
-        Something went wrong. Please try again later.
-    </div>
-    {% endif %}
-
-</form>
+    {% endwith %}
+</div>
 
 {% endblock body %}

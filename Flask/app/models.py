@@ -1,3 +1,5 @@
+from sqlalchemy import func
+
 from . import db
 
 
@@ -17,9 +19,8 @@ class Vehicle(db.Model):
     __table_args__ = (db.UniqueConstraint('vehicle_id', 'user_id', 'vehicle_image'),)
     vehicle_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
-    vehicle_image = db.Column(db.String, nullable=False)
     vehicle_name = db.Column(db.String, nullable=False)
-    vehicle_number = db.Column(db.String, nullable=False)
+    vehicle_image = db.Column(db.String, unique=True)
     vehicle_token = db.Column(db.String, unique=True)
     data = db.relationship('DrivingData', backref='vehicle')
 
@@ -35,6 +36,7 @@ class DrivingData(db.Model):
     nearby_vehicle_distance = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False, server_default=func.now())
 
     def __repr__(self):
         return '<User %r>' % self.data_id

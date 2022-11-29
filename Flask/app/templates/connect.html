@@ -1,0 +1,17 @@
+{% extends 'skeleton.html' %}
+
+{% block title %}Add Vehicle - Rash Driving Analyser{% endblock title %}
+
+{% block body %}
+
+<div class="form">
+    <h2>Connect to your Vehicle</h2>
+    <form method="post" enctype="multipart/form-data">
+        {{ connect_form.csrf_token }}
+        {{ connect_form.vehicle_name(id="name", class="input-box", placeholder="Vehicle Name") }}
+        {{ connect_form.vehicle_image(id="email", class="file-upload-box", placeholder="E-mail") }}
+        {{ connect_form.submit(class="button", id="register-button") }}
+    </form>
+</div>
+
+{% endblock body %}
