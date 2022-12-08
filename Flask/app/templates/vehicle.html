@@ -10,6 +10,16 @@
 			background-size:cover;
 			background-position: center center;
 		}
+
+
+
+
+
+
+
+
+
+
 </style>
 {% endif %}
 
@@ -36,18 +46,18 @@
 
 			      function drawChart() {
 			        var data = new google.visualization.DataTable();
-			        data.addColumn('string', 'Topping');
-			        data.addColumn('number', 'Slices');
+			        data.addColumn('string', 'Incidents');
+			        data.addColumn('number', 'Count');
 			        data.addRows([
-			          ['Mushrooms', 3],
-			          ['Onions', 1],
-			          ['Olives', 1],
-			          ['Zucchini', 1],
-			          ['Pepperoni', 2]
+			          ['Close Calls', 8],
+			          ['Excessive Speeding', 4],
+			          ['Hard Cornering', 3],
+			          ['Quick Starts', 2],
+			          ['Harsh Braking', 3]
 			        ]);
 
 			        var options = {
-			        	'title':'How Much Pizza I Ate Last Night',
+			        	'title':'What Kind Of Many Incidents Happened',
 			        	backgroundColor: {
 			        		fillOpacity: 0,
 			        	},
@@ -56,7 +66,6 @@
 			        var chart = new google.visualization.PieChart(document.getElementById('PieChart'));
 			        chart.draw(data, options);
 			      }
-
             </script>
         </div>
 
@@ -69,18 +78,18 @@
 
 			      function drawChart() {
 			        var data = new google.visualization.DataTable();
-			        data.addColumn('string', 'Topping');
-			        data.addColumn('number', 'Slices');
+			        data.addColumn('string', 'Incidents');
+			        data.addColumn('number', 'Count');
 			        data.addRows([
-			          ['Mushrooms', 3],
-			          ['Onions', 1],
-			          ['Olives', 1],
-			          ['Zucchini', 1],
-			          ['Pepperoni', 2]
+			          ['Close Calls', 8],
+			          ['Excessive Speeding', 4],
+			          ['Hard Cornering', 3],
+			          ['Quick Starts', 2],
+			          ['Harsh Braking', 3]
 			        ]);
 
 			        var options = {
-			        	'title':'How Much Pizza I Ate Last Night',
+			        	'title':'What Kind Of Many Incidents Happened',
 			        	backgroundColor: {
 			        		fillOpacity: 0,
 			        	},
@@ -89,10 +98,60 @@
 			        var chart = new google.visualization.BarChart(document.getElementById('BarChart'));
 			        chart.draw(data, options);
 			      }
-
             </script>
         </div>
 
+        <div class="card-analysis">
+            <div id="LineChart" class="card-image"></div>
+            <script type="text/javascript">
+                google.charts.load('current', {packages: ['corechart', 'line']});
+                google.charts.setOnLoadCallback(drawBasic);
+
+                function drawBasic() {
+
+                      var data = new google.visualization.DataTable();
+                      data.addColumn('date', 'Date');
+                      data.addColumn('number', 'Incidents');
+
+                      data.addRows([
+                        [new Date(2022, 10, 15), 2],
+                        [new Date(2022, 10, 16), 10],
+                        [new Date(2022, 10, 17), 23],
+                        [new Date(2022, 10, 18), 17],
+                        [new Date(2022, 10, 19), 12],
+                        [new Date(2022, 10, 20), 3],
+                        [new Date(2022, 10, 21), 11],
+                        [new Date(2022, 10, 22), 27],
+                        [new Date(2022, 10, 23), 23],
+                        [new Date(2022, 10, 24), 25],
+                        [new Date(2022, 10, 25), 18],
+                        [new Date(2022, 10, 26), 20],
+                        [new Date(2022, 10, 27), 4],
+                        [new Date(2022, 10, 28), 19],
+                        [new Date(2022, 10, 29), 24],
+                        [new Date(2022, 10, 30), 20],
+                      ]);
+
+                      var options = {
+                      lineWidth: 3,
+                      backgroundColor: {
+			        		fillOpacity: 0,
+			        	},
+                        hAxis: {
+                          title: 'Date'
+                        },
+                        vAxis: {
+                          title: 'Incidents'
+                        }
+                      };
+
+                      var chart = new google.visualization.LineChart(document.getElementById('LineChart'));
+
+                      chart.draw(data, options);
+                    }
+
+            </script>
+        </div>
 
     </div>
 </section>
