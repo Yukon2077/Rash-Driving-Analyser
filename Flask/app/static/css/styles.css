@@ -351,3 +351,32 @@ footer {
 	font-size: 56px;
 	border-radius: 240px;
 }
+.card-table {
+    padding: 12px;
+    width: 100%;
+	background: rgba(170, 204, 238, 0.75);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td, th {
+    padding: 6px;
+    border: #557799 solid 1px;
+}
+
+.bi {
+	display: inline-block;
+	color: #335577;
+	text-decoration: none;
+	padding: 4px;
+	margin: 0px 4px;
+	transition: 0.2s;
+}
+
+.bi:hover {
+    color: #557799;
+	transform: scale(1.5);
+}

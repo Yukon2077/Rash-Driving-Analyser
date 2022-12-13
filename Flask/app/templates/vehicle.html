@@ -9,17 +9,8 @@
 			background: linear-gradient(rgba(200, 227, 255, 0.75), rgba(200, 227, 255, 0.75)), url("{{ '/uploads/' + vehicle.vehicle_image }}");
 			background-size:cover;
 			background-position: center center;
+			background-attachment: fixed;
 		}
-
-
-
-
-
-
-
-
-
-
 </style>
 {% endif %}
 
@@ -154,6 +145,39 @@
         </div>
 
     </div>
+</section>
+
+<section>
+	<h2>Raw Driving Data</h2>
+    <div class="card-table">
+			<table>
+				<thead>
+					<tr>
+						<th>Data id</th>
+						<th>Driving vehicle speed</th>
+						<th>Nearby vehicle speed</th>
+						<th>Nearby vehicle distance</th>
+						<th>Location</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for i in data %}
+
+					<tr>
+						<td>{{ i.data_id }}</td>
+						<td>{{ i.driving_vehicle_speed }}</td>
+						<td>{{ i.nearby_vehicle_speed }}</td>
+						<td>{{ i.nearby_vehicle_distance }}</td>
+						<td><a href="https://www.google.com/maps/search/?api=1&query={{ i.latitude }}%2C{{ i.longitude }}" target="_blank"><i class="bi bi-geo-alt-fill"></i></a> {{ i.latitude }} | {{ i.longitude }}</td>
+					</tr>
+
+					{% endfor %}
+				</tbody>
+
+			</table>
+
+		</div>
 </section>
 
 {% endblock body %}
