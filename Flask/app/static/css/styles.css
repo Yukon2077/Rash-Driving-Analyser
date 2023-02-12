@@ -6,6 +6,7 @@
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
 }
 
 html {
@@ -64,7 +65,8 @@ header nav {
 	padding: 18px;
 	justify-content: flex-end;
 	align-items: center;
-	background: rgba(0, 0, 0, 0.5);
+	background: #121212;
+	box-shadow: 0px 0px 4px black;
 }
 
 footer {
@@ -76,28 +78,26 @@ footer {
 }
 
 .nav-link {
+    display: inline-block;
 	color: #AACCEE;
 	text-decoration: none;
 	transition: 0.2s ease-in-out;
 }
 
 .nav-link:hover {
-	color: #BBDDFF;
-	text-shadow: 0px 0px 8px #BBDDFF;
-	transform: scale(1.05);
+	color: #CCEEFF;
+	text-shadow: 0px 0px 2px white;
 }
 
 .nav-link:focus {
 	outline: none;
-	color: #BBDDFF;
-	text-shadow: 0px 0px 16px #BBDDFF;
-	transform: scale(1.05);
+	color: #CCEEFF;
+	text-shadow: 0px 0px 8px white;
 }
 
 .nav-link:active {
-	color: #BBDDFF;
-	text-shadow: 0px 0px 0px #BBDDFF;
-	transform: scale(0.95);
+	color: #CCEEFF;
+	text-shadow: 0px 0px 4px white;
 }
 
 footer {
@@ -130,27 +130,25 @@ footer {
 }
 
 .nav-link .bi {
+    display: inline-block;
 	letter-spacing: 4px;
 	transition: 0.2s;
 }
 
 .nav-link .bi:hover {
-	color: #BBDDFF;
-	text-shadow: 0px 0px 8px #BBDDFF;
-	transform: scale(1.05);
+	color: #CCEEFF;
+	text-shadow: 0px 0px 2px white;
 }
 
 .nav-link .bi:focus {
 	outline: none;
-	color: #BBDDFF;
-	text-shadow: 0px 0px 16px #BBDDFF;
-	transform: scale(1.05);
+	color: #CCEEFF;
+	text-shadow: 0px 0px 8px white;
 }
 
 .nav-link .bi:active {
 	color: #BBDDFF;
-	text-shadow: 0px 0px 0px #BBDDFF;
-	transform: scale(0.95);
+	text-shadow: 0px 0px 4px white;
 }
 
 .nav-logo {
@@ -190,6 +188,7 @@ footer {
 	margin: 0px 8px;
 	min-width: 104px;
 	transition: 0.2s;
+	box-sizing: border-box;
 }
 
 .button:hover, .file-upload-box::file-selector-button:hover {
@@ -199,11 +198,9 @@ footer {
 }
 
 .button:focus, .file-upload-box::file-selector-button:focus {
-	outline: none;
+	outline: #557799 solid 1px;
 	background-color: #BBDDFF;
-	padding: 11px;
 	box-shadow: 0px 0px 16px #557799;
-	border: #557799 solid 2px;
 	transform: scale(1.05);
 }
 
@@ -225,11 +222,9 @@ footer {
 }
 
 .input-box:focus {
-	outline: none;
 	background: white;
-	padding: 11px;
 	box-shadow: 0px 0px 16px #557799;
-	border: #557799 solid 2px;
+	outline: #557799 solid 1px;
 	transform: scale(1.05);
 }
 
@@ -252,11 +247,9 @@ footer {
 }
 
 .file-upload-box:active {
-	outline: none;
+	outline: #557799 solid 1px;
 	background: white;
-	padding: 11px;
 	box-shadow: 0px 0px 16px #557799;
-	border: #557799 solid 2px;
 	transform: scale(0.95);
 }
 
@@ -327,11 +320,9 @@ footer {
 }
 
 .card:focus {
-	outline: none;
+	outline: #557799 solid 1px;
 	background-color: #BBDDFF;
 	box-shadow: 0px 0px 16px #557799;
-	margin: -1px;
-	border: #557799 solid 2px;
 	transform: scale(1.05);
 }
 
