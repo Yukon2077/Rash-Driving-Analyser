@@ -5,7 +5,7 @@ from flask import make_response
 from flask_restful import reqparse, Resource
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .. import db, api
+from .. import db, api, socketio
 from ..models import User, Vehicle, DrivingData
 
 parser = reqparse.RequestParser()
@@ -115,26 +115,34 @@ class AddVehicleApi(Resource):
 class DrivingDataApi(Resource):
     def post(self):
         args = parser.parse_args()
+        # Incase if it's not possible to add bearer token, put the token in the body
+        # token_arg = tokenParser.parse_args()
+        # token = token_arg['Authorization'].split()[1]
         token = args['token']
         driving_vehicle_speed = args['driving_vehicle_speed']
         nearby_vehicle_speed = args['nearby_vehicle_speed']
         nearby_vehicle_distance = args['nearby_vehicle_distance']
         latitude = args['latitude']
         longitude = args['longitude']
-        vehicle = Vehicle.query.filter_by(vehicle_token=token).first()
-        data = DrivingData(
-            vehicle_id=vehicle.vehicle_id,
-            driving_vehicle_speed=driving_vehicle_speed,
-            nearby_vehicle_speed=nearby_vehicle_speed,
-            nearby_vehicle_distance=nearby_vehicle_distance,
-            latitude=latitude,
-            longitude=longitude)
-        db.session.add(data)
-        db.session.commit()
-        if data.data_id:
-            return make_response({'code': 1, 'message': 'Sucessfully added'}, 200)
+        if token:
+            vehicle = Vehicle.query.filter_by(vehicle_token=token).first()
+            data = DrivingData(
+                vehicle_id=vehicle.vehicle_id,
+                driving_vehicle_speed=driving_vehicle_speed,
+                nearby_vehicle_speed=nearby_vehicle_speed,
+                nearby_vehicle_distance=nearby_vehicle_distance,
+                latitude=latitude,
+                longitude=longitude)
+            db.session.add(data)
+            db.session.commit()
+            if data.data_id:
+                new_data = row_to_dict(DrivingData.query.filter_by(data_id=data.data_id).first())
+                socketio.emit('new_data', new_data, to=vehicle.vehicle_id)
+                return make_response({'code': 1, 'message': 'Sucessfully added'}, 200)
+            else:
+                return make_response({'code': 2, 'message': 'Something went wrong'}, 404)
         else:
-            return make_response({'code': 2, 'message': 'Something went wrong'}, 404)
+            return make_response({'code': 3, 'message': 'Vehicle token missing'}, 404)
 
 
 def row_to_dict(row):

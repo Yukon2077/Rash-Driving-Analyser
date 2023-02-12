@@ -161,7 +161,38 @@
 					</tr>
 				</thead>
 
-				<tbody>
+				<tbody id="table-body">
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+				<script type="text/javascript" charset="utf-8">
+					var socket = io();
+					var vehicle_id = {{ vehicle.vehicle_id }};
+
+					socket.on('connect', () => {
+						console.log('connected!');
+						socket.emit('join', vehicle_id);
+					});
+
+					socket.on('entered_room', () => {
+						console.log('entered room!');
+					});
+
+					socket.on('new_data', (data) => {
+						var table_body = document.getElementById('table-body');
+						var row = table_body.insertRow(0);
+						var cell_data_id = row.insertCell(0);
+						var cell_driving_vehicle_speed = row.insertCell(1);
+						var cell_nearby_vehicle_speed = row.insertCell(2);
+						var cell_nearby_vehicle_distance = row.insertCell(3);
+						var cell_location = row.insertCell(4);
+
+						cell_data_id.innerHTML = data.data_id;
+						cell_driving_vehicle_speed.innerHTML = data.driving_vehicle_speed;
+						cell_nearby_vehicle_speed.innerHTML = data.nearby_vehicle_speed;
+						cell_nearby_vehicle_distance.innerHTML = data.nearby_vehicle_distance;
+						cell_location.innerHTML = "<a href=\"https://www.google.com/maps/search/?api=1&query=" + data.latitude + "%2C" + data.longitude + "\" target=\"_blank\"><i class=\"bi bi-geo-alt-fill\"></i></a>" + data.latitude + " | " + data.longitude;
+					});
+
+				</script>
 					{% for i in data %}
 
 					<tr>

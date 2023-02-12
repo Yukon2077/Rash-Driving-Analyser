@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from flask import render_template, session, request, redirect, url_for, send_from_directory, current_app, flash
+from flask import render_template, session, redirect, url_for, send_from_directory, current_app, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
@@ -117,7 +117,7 @@ def connect():
 def view_vehicle(vehicle_id):
     if 'user_id' in session:
         vehicle = Vehicle.query.filter_by(user_id=session['user_id'], vehicle_id=vehicle_id).first()
-        data = DrivingData.query.filter_by(vehicle_id=vehicle.vehicle_id).all()
+        data = DrivingData.query.order_by(DrivingData.data_id.desc()).filter_by(vehicle_id=vehicle.vehicle_id).all()
         return render_template('vehicle.html', vehicle=vehicle, data=data)
     else:
         return redirect(url_for('.login'))
