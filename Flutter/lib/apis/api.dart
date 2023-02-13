@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,7 +7,7 @@ import '../models/vehicle_model.dart';
 
 class Api {
 
-  static const String baseUrl = 'http://192.168.29.220/';
+  static const String baseUrl = 'http://192.168.4.150/';
 
   static Future<String> login(String email, String password) async {
     var response = await http.post(
@@ -77,6 +76,13 @@ class Api {
         'Authorization' : 'Bearer $token'
       },
     );
+    if (response.statusCode >= 200 && response.statusCode < 400) {
+      var vehicleDataJson = jsonDecode(response.body);
+      return vehicleDataJson;
+    } else {
+      var body = jsonDecode(response.body);
+      throw body['message'];
+    }
 
   }
 

@@ -21,8 +21,8 @@ class Login extends StatelessWidget {
             ),
           ),
           const LoginForm(),
-          FormTextButton(
-              text: 'Don\'t have an account? Click here to register',
+          TextButton(
+              child: Text('Don\'t have an account? Click here to register'),
               onPressed: () => register(context)),
         ],
       ),

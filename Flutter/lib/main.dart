@@ -32,7 +32,7 @@ class App extends StatelessWidget {
         '/home': (context) => const Home(),
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
-        '/vehicle': (context) => const VehicleDetail(),
+        '/vehicle': (context) => VehicleDetail(),
         '/vehicle/add': (context) => const AddVehicle(),
         '/profile': (context) => const Profile(),
       },

@@ -34,12 +34,9 @@ class HomeState extends State<Home> {
           )
         ],
       ),
-      floatingActionButton: Container(
-
-        child: FloatingActionButton(
-          onPressed: () => Navigator.of(context).pushNamed('/vehicle/add'),
-          child: const Icon(Icons.add),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).pushNamed('/vehicle/add'),
+        child: const Icon(Icons.add),
       ),
       body: Center(
           child: (vehicleFuture == null)
@@ -61,12 +58,18 @@ class HomeState extends State<Home> {
                     if (snapshot.hasData) {
                       var vehicles = snapshot.data;
                       if (vehicles == null) {
-                        return const Text('None');
+                        return const Text(
+                          'None',
+                          textAlign: TextAlign.center,
+                        );
                       }
                       return ListView.builder(
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 100),
                           itemCount: vehicles.length,
                           itemBuilder: (context, index) {
-                            return Vehicle(vehicle: vehicles[index],);
+                            return Vehicle(
+                              vehicle: vehicles[index],
+                            );
                           });
                     }
                     if (snapshot.hasError) {

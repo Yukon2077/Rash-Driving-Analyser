@@ -21,20 +21,13 @@ class Vehicle extends StatelessWidget {
             children: [
               Container(
                 margin: EdgeInsets.all(4),
-                child: Image.network('${Api.baseUrl}/uploads/${vehicle.vehicleImage}'),
+                child: (vehicle.vehicleImage != 'None') ? FadeInImage.assetNetwork(placeholder: 'assets/placeholder.jpg', image: '${Api.baseUrl}/uploads/${vehicle.vehicleImage}') : Image.asset('assets/placeholder.jpg'),
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(4, 4, 4, 4),
                 child: Text(
                   vehicle.vehicleName,
                   style: TextStyle(fontSize: 18),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(4, 0, 4, 4),
-                child: Text(
-                  vehicle.vehicleNumber,
-                  style: TextStyle(fontSize: 14),
                 ),
               ),
             ],

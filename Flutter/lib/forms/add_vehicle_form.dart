@@ -45,16 +45,6 @@ class AddVehicleFormState extends State<AddVehicleForm> {
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.all(12),
-            child: TextFormField(
-              controller: vehicleNumberController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Vehicle Number',
-              ),
-            ),
-          ),
         ],
       ),
     );

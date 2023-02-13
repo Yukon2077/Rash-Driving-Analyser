@@ -2,7 +2,6 @@ class VehicleModel {
   final int userId;
   final int vehicleId;
   final String vehicleName;
-  final String vehicleNumber;
   final String vehicleImage;
 
   VehicleModel(
@@ -10,7 +9,6 @@ class VehicleModel {
         required this.userId,
         required this.vehicleId,
         required this.vehicleName,
-        required this.vehicleNumber,
         required this.vehicleImage});
 
   factory VehicleModel.fromJson(Map<String, dynamic> json) {
@@ -18,7 +16,6 @@ class VehicleModel {
       userId: int.parse(json['user_id']),
       vehicleId: int.parse(json['vehicle_id']),
       vehicleName: json['vehicle_name'],
-      vehicleNumber: json['vehicle_number'],
       vehicleImage: json['vehicle_image']
     );
   }

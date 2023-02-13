@@ -20,12 +20,9 @@ class Register extends StatelessWidget {
             ),
           ),
           RegisterForm(),
-          Container(
-            margin: EdgeInsets.fromLTRB(12, 0, 12, 0),
-            child: TextButton(
-                onPressed: () => login(context),
-                child: Text('Already have an account? Click here to login')),
-          ),
+          TextButton(
+              onPressed: () => login(context),
+              child: Text('Already have an account? Click here to login')),
         ],
       ),
     );
@@ -34,5 +31,4 @@ class Register extends StatelessWidget {
   void login(BuildContext context) {
     Navigator.pushReplacementNamed(context, '/login');
   }
-
 }
