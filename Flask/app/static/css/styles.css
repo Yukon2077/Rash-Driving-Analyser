@@ -85,19 +85,16 @@ footer {
 }
 
 .nav-link:hover {
-	color: #CCEEFF;
-	text-shadow: 0px 0px 2px white;
+	color: white;
 }
 
 .nav-link:focus {
 	outline: none;
-	color: #CCEEFF;
-	text-shadow: 0px 0px 8px white;
+	color: white;
 }
 
 .nav-link:active {
-	color: #CCEEFF;
-	text-shadow: 0px 0px 4px white;
+	color: white;
 }
 
 footer {
@@ -136,34 +133,32 @@ footer {
 }
 
 .nav-link .bi:hover {
-	color: #CCEEFF;
-	text-shadow: 0px 0px 2px white;
+	color: white;
 }
 
 .nav-link .bi:focus {
 	outline: none;
-	color: #CCEEFF;
-	text-shadow: 0px 0px 8px white;
+	color: white;
 }
 
 .nav-link .bi:active {
-	color: #BBDDFF;
-	text-shadow: 0px 0px 4px white;
+	color: white;
 }
 
 .nav-logo {
-	font-family: 'Montserrat', sans-serif;
+	//font-family: 'Montserrat', sans-serif;
 	margin-right: auto;
 }
 
 .footer-logo {
-	font-family: 'Montserrat', sans-serif;
+	//font-family: 'Montserrat', sans-serif;
 	margin: 24px;
 }
 
 .nav-links {
 	list-style: none;
 	display: flex;
+
 }
 
 .nav-links a {
