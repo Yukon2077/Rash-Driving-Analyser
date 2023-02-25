@@ -27,7 +27,7 @@ def login():
             if user:
                 if check_password_hash(user.password, password):
                     session['user_id'] = user.user_id
-                    return redirect(url_for('.home'))
+                    return redirect(url_for('.dashboard'))
                 else:
                     flash('Wrong password or email')
                     return redirect(url_for('.login'))  # Wrong password...............or email, I dunno
@@ -36,7 +36,7 @@ def login():
                 return redirect(url_for('.login'))  # Email doesn't exists
         return render_template('login.html', login_form=login_form)
     else:
-        return redirect(url_for('.home'))
+        return redirect(url_for('.dashboard'))
 
 
 @main.route('/register', methods=['GET', 'POST'])
@@ -57,7 +57,7 @@ def register():
                 db.session.commit()
                 if user.user_id:
                     session['user_id'] = user.user_id
-                    return redirect(url_for('.home'))
+                    return redirect(url_for('.dashboard'))
                 else:
                     flash('Something went wrong')
                     return redirect(url_for('.register'))
@@ -67,16 +67,16 @@ def register():
         return render_template('register.html',
                                register_form=register_form)
     else:
-        return redirect(url_for('.home'))
+        return redirect(url_for('.dashboard'))
 
 
-@main.route('/home')
-def home():
+@main.route('/dashboard')
+def dashboard():
     if 'user_id' in session:
         user = User.query.with_entities(User.name, User.email).filter_by(user_id=session['user_id']).first()
         vehicles = Vehicle.query.filter_by(user_id=session['user_id']).all()
         vehicle_count = Vehicle.query.filter_by(user_id=session['user_id']).count()
-        return render_template('home.html', user=user, vehicles=vehicles, vehicle_count=vehicle_count)
+        return render_template('dashboard.html', user=user, vehicles=vehicles, vehicle_count=vehicle_count)
     else:
         return redirect(url_for('.login'))
 
@@ -107,7 +107,7 @@ def connect():
             db.session.add(vehicle)
             db.session.commit()
             current_app.logger.debug('vehicle added')
-            return redirect(url_for('.home'))
+            return redirect(url_for('.dashboard'))
         return render_template('connect.html', connect_form=connect_form)
     else:
         return redirect(url_for('.login'))

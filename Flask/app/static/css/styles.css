@@ -15,24 +15,32 @@ html {
 }
 
 html::-webkit-scrollbar {
-      width: 10px;
+	width: 10px;
 }
 
 html::-webkit-scrollbar-track {
-    background: #557799;
+	background: #557799;
 }
 
 html::-webkit-scrollbar-thumb {
 	margin: 2px;
-    background: #BBDDFF;
+	background: #BBDDFF;
 }
 
 body {
-	background: #BBDDFF;
-	/*background: radial-gradient(lightsteelblue 50%, steelblue);*/
+	background: radial-gradient(lightsteelblue 50%, steelblue);
 	display: flex;
 	flex-flow: column;
 	min-height: 85vh;
+}
+
+.display {
+	height: 90vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	
 }
 
 .display h1 {
@@ -78,7 +86,7 @@ footer {
 }
 
 .nav-link {
-    display: inline-block;
+	display: inline-block;
 	color: #AACCEE;
 	text-decoration: none;
 	transition: 0.2s ease-in-out;
@@ -127,7 +135,7 @@ footer {
 }
 
 .nav-link .bi {
-    display: inline-block;
+	display: inline-block;
 	letter-spacing: 4px;
 	transition: 0.2s;
 }
@@ -264,25 +272,25 @@ footer {
 
 .grid-vehicle-list {
 	display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-    grid-gap: 20px;
+	grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+	grid-gap: 20px;
 }
 
 .grid-analysis-list {
 	display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-    grid-gap: 20px;
+	grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+	grid-gap: 20px;
 }
 
 .card-analysis {
 	display: grid;
-    grid-template-rows: 400px;
-    background: rgba(170, 204, 238, 0.75);
+	grid-template-rows: 400px;
+	background: rgba(170, 204, 238, 0.75);
 }
 
 .card {
 	display: grid;
-    grid-template-rows: 200px 1fr;
+	grid-template-rows: 200px 1fr;
 	color: black;
 	text-decoration: none;
 	background: #AACCEE;
@@ -292,8 +300,8 @@ footer {
 
 .card-image {
 	object-fit: cover;
-    width: 100%;
-    height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 .card-body {
@@ -338,19 +346,19 @@ footer {
 	border-radius: 240px;
 }
 .card-table {
-    padding: 12px;
-    width: 100%;
+	padding: 12px;
+	width: 100%;
 	background: rgba(170, 204, 238, 0.75);
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
+	width: 100%;
+	border-collapse: collapse;
 }
 
 td, th {
-    padding: 6px;
-    border: #557799 solid 1px;
+	padding: 6px;
+	border: #557799 solid 1px;
 }
 
 .bi {
@@ -363,6 +371,6 @@ td, th {
 }
 
 .bi:hover {
-    color: #557799;
+	color: #557799;
 	transform: scale(1.5);
 }
