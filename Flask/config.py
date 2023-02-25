@@ -10,14 +10,14 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    UPLOAD_FOLDER = os.path.join(basedir, 'database\\development\\images')
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database\\development\\database.sqlite3')
+    UPLOAD_FOLDER = os.path.join(basedir, 'database/development/images')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database/development/database.sqlite3')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class ProductionConfig(Config):
-    UPLOAD_FOLDER = os.path.join(basedir, 'database\\production\\images')
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database\\production\\database.sqlite3')
+    UPLOAD_FOLDER = os.path.join(basedir, 'database/production/images')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database/production/database.sqlite3')
 
 
 config = {

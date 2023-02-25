@@ -30,7 +30,7 @@ class HomeState extends State<Home> {
         actions: [
           IconButton(
             onPressed: () => Navigator.of(context).pushNamed('/profile'),
-            icon: Icon(Icons.account_circle),
+            icon: const Icon(Icons.account_circle),
           )
         ],
       ),
@@ -39,59 +39,40 @@ class HomeState extends State<Home> {
         child: const Icon(Icons.add),
       ),
       body: Center(
-          child: (vehicleFuture == null)
-              ? Container(
-                  width: 48,
-                  height: 48,
-                  margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-                  child: CircularProgressIndicator())
-              : FutureBuilder<List<VehicleModel>>(
-                  future: vehicleFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done) {
-                      return Container(
-                          width: 48,
-                          height: 48,
-                          margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-                          child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasData) {
-                      var vehicles = snapshot.data;
-                      if (vehicles == null) {
-                        return const Text(
-                          'None',
-                          textAlign: TextAlign.center,
-                        );
-                      }
-                      return ListView.builder(
-                          padding: EdgeInsets.fromLTRB(0, 0, 0, 100),
-                          itemCount: vehicles.length,
-                          itemBuilder: (context, index) {
-                            return Vehicle(
-                              vehicle: vehicles[index],
-                            );
-                          });
-                    }
-                    if (snapshot.hasError) {
-                      return Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(20.0),
-                            child: Text(
+          child: FutureBuilder<List<VehicleModel>>(
+              future: vehicleFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasData || snapshot.hasError) {
+                  List<VehicleModel> vehicles =
+                      snapshot.hasData ? snapshot.data! : [];
+                  return RefreshIndicator(
+                      onRefresh: _refresh,
+                      child: snapshot.hasError
+                          ? Text(
                               snapshot.error.toString(),
                               textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      );
-                    }
+                            )
+                          : vehicles.isEmpty
+                              ? const Text('No Vehicles Added Yet')
+                              : ListView.builder(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 100),
+                                  itemCount: vehicles.length,
+                                  itemBuilder: (context, index) {
+                                    return Vehicle(
+                                      vehicle: vehicles[index],
+                                    );
+                                  }));
+                }
 
-                    return Container(
-                        width: 48,
-                        height: 48,
-                        margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-                        child: Text('No Vehicles Added Yet'));
-                  })),
+                return const CircularProgressIndicator();
+              })),
     );
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      vehicleFuture = Api.getVehicles();
+    });
   }
 }

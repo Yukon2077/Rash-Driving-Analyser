@@ -131,7 +131,7 @@ def logout():
 
 @main.route('/uploads/<string:image>')
 def download_file(image):
-    return send_from_directory(current_app.config["UPLOAD_FOLDER"] + '\\', image)
+    return send_from_directory(current_app.config["UPLOAD_FOLDER"] + '/', image)
 
 
 @main.after_request

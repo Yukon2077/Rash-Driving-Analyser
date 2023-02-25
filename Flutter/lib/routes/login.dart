@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rash_driving_analyser/forms/login_form.dart';
-import 'package:rash_driving_analyser/widgets/form_text_button.dart';
 
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
@@ -22,7 +21,7 @@ class Login extends StatelessWidget {
           ),
           const LoginForm(),
           TextButton(
-              child: Text('Don\'t have an account? Click here to register'),
+              child: const Text('Don\'t have an account? Click here to register'),
               onPressed: () => register(context)),
         ],
       ),

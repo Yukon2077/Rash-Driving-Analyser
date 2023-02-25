@@ -23,16 +23,14 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-          primarySwatch: Colors.blueGrey
-      ),
+      theme: ThemeData(primarySwatch: Colors.blueGrey),
       title: 'Rash Driving Analyser',
       initialRoute: (token != '' || token.isNotEmpty) ? '/home' : '/login',
       routes: {
         '/home': (context) => const Home(),
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
-        '/vehicle': (context) => VehicleDetail(),
+        '/vehicle': (context) => const VehicleDetail(),
         '/vehicle/add': (context) => const AddVehicle(),
         '/profile': (context) => const Profile(),
       },

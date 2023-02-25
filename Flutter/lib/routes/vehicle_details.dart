@@ -5,6 +5,8 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../apis/api.dart';
 
 class VehicleDetail extends StatefulWidget {
+  const VehicleDetail({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return VehicleDetailState();

@@ -12,17 +12,18 @@ class Register extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            margin: EdgeInsets.all(12),
-            child: Text(
+            margin: const EdgeInsets.all(12),
+            child: const Text(
               'Register',
               style: TextStyle(fontSize: 36),
               textAlign: TextAlign.center,
             ),
           ),
-          RegisterForm(),
+          const RegisterForm(),
           TextButton(
               onPressed: () => login(context),
-              child: Text('Already have an account? Click here to login')),
+              child:
+                  const Text('Already have an account? Click here to login')),
         ],
       ),
     );

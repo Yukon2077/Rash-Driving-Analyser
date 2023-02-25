@@ -9,21 +9,21 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Profile'),
+          title: const Text('Profile'),
         ),
         body: SettingsList(sections: [
-          SettingsSection(title: Text('Profile'), tiles: [
+          SettingsSection(title: const Text('Profile'), tiles: [
             SettingsTile(
-              title: Text('Logout'),
+              title: const Text('Logout'),
               onPressed: (context) => logout(context),
             )
           ])
         ]));
   }
 
-  Future<void> logout(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', '');
+  void logout(BuildContext context) {
+    SharedPreferences.getInstance()
+        .then((prefs) => prefs.setString('token', ''));
     Navigator.of(context)
         .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
   }

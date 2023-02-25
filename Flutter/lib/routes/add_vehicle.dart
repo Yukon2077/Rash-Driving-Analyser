@@ -9,12 +9,10 @@ class AddVehicle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Vehicle'),
+        title: const Text('Add Vehicle'),
       ),
       body: Column(
-        children: [
-          AddVehicleForm()
-        ],
+        children: [AddVehicleForm()],
       ),
     );
   }

@@ -6,8 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/vehicle_model.dart';
 
 class Api {
-
-  static const String baseUrl = 'http://192.168.4.150/';
+  static const String baseUrl = 'http://192.168.136.46/';
 
   static Future<String> login(String email, String password) async {
     var response = await http.post(
@@ -24,13 +23,15 @@ class Api {
     }
   }
 
-  static Future<String> register(String name, String email, String password) async {
+  static Future<String> register(
+      String name, String email, String password) async {
     var response = await http.post(
       Uri.parse('${baseUrl}api/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{'name': name, 'email': email, 'password': password}),
+      body: jsonEncode(
+          <String, String>{'name': name, 'email': email, 'password': password}),
     );
 
     if (response.statusCode >= 200 && response.statusCode < 400) {
@@ -49,14 +50,13 @@ class Api {
       Uri.parse('${baseUrl}api/vehicle'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization' : 'Bearer $token'
+        'Authorization': 'Bearer $token'
       },
     );
     if (response.statusCode >= 200 && response.statusCode < 400) {
       var vehiclesJson = jsonDecode(response.body) as List;
-      List<VehicleModel> vehicles = vehiclesJson
-          .map((e) => VehicleModel.fromJson(e))
-          .toList();
+      List<VehicleModel> vehicles =
+          vehiclesJson.map((e) => VehicleModel.fromJson(e)).toList();
       return vehicles;
     } else {
       var body = jsonDecode(response.body);
@@ -73,7 +73,7 @@ class Api {
       Uri.parse('${baseUrl}api/vehicle/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization' : 'Bearer $token'
+        'Authorization': 'Bearer $token'
       },
     );
     if (response.statusCode >= 200 && response.statusCode < 400) {
@@ -83,7 +83,5 @@ class Api {
       var body = jsonDecode(response.body);
       throw body['message'];
     }
-
   }
-
 }

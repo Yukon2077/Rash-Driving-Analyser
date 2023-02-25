@@ -28,7 +28,7 @@ html::-webkit-scrollbar-thumb {
 }
 
 body {
-	background: linear-gradient(to bottom right, steelblue, 20%, #BBDDFF, 80%, steelblue);
+	background: #BBDDFF;
 	/*background: radial-gradient(lightsteelblue 50%, steelblue);*/
 	display: flex;
 	flex-flow: column;
