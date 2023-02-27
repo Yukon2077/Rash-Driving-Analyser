@@ -1,6 +1,6 @@
 import uuid
 
-import werkzeug
+from werkzeug.datastructures import FileStorage
 from flask import make_response
 from flask_restful import reqparse, Resource
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -8,27 +8,30 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from .. import db, api, socketio
 from ..models import User, Vehicle, DrivingData
 
-parser = reqparse.RequestParser()
-parser.add_argument('token', type=str)
-parser.add_argument('name', type=str)
-parser.add_argument('email', type=str)
-parser.add_argument('password', type=str)
-parser.add_argument('vehicle_id', type=str)
-parser.add_argument('vehicle_name', type=str)
-parser.add_argument('vehicle_number', type=str)
-parser.add_argument('vehicle_image', type=werkzeug.datastructures.FileStorage, location='files')
-parser.add_argument('driving_vehicle_speed', type=str)
-parser.add_argument('nearby_vehicle_speed', type=str)
-parser.add_argument('nearby_vehicle_distance', type=str)
-parser.add_argument('latitude', type=str)
-parser.add_argument('longitude', type=str)
-tokenParser = reqparse.RequestParser()
-tokenParser.add_argument('Authorization', location='headers')
+token_parser = reqparse.RequestParser()
+token_parser.add_argument('Authorization', location='headers')
+
+user_parser = reqparse.RequestParser()
+user_parser.add_argument('name', type=str)
+user_parser.add_argument('email', type=str)
+user_parser.add_argument('password', type=str)
+
+vehicle_parser = reqparse.RequestParser()
+vehicle_parser.add_argument('vehicle_name', type=str)
+vehicle_parser.add_argument('vehicle_image', type=FileStorage, location='files')
+
+driving_data_parser = reqparse.RequestParser()
+driving_data_parser.add_argument('token', type=str)
+driving_data_parser.add_argument('driving_vehicle_speed', type=str)
+driving_data_parser.add_argument('nearby_vehicle_speed', type=str)
+driving_data_parser.add_argument('nearby_vehicle_distance', type=str)
+driving_data_parser.add_argument('latitude', type=str)
+driving_data_parser.add_argument('longitude', type=str)
 
 
 class LoginApi(Resource):
     def post(self):
-        args = parser.parse_args()
+        args = user_parser.parse_args()
         email = args['email']
         password = args['password']
         user = User.query.filter_by(email=email).first()
@@ -45,7 +48,7 @@ class LoginApi(Resource):
 
 class RegisterApi(Resource):
     def post(self):
-        args = parser.parse_args()
+        args = user_parser.parse_args()
         name = args['name']
         email = args['email']
         password = args['password']
@@ -63,58 +66,47 @@ class RegisterApi(Resource):
             return make_response({'code': 2, 'message': 'Email already exists'}, 404)
 
 
-class VehicleListApi(Resource):
-    def get(self):
-        args = tokenParser.parse_args()
-        token = args['Authorization'].split()[1]
-        user = User.query.filter_by(user_token=token).first()
-        if bool(user):
-            vehicles = Vehicle.query.filter_by(user_id=user.user_id).all()
-            vehicle_as_json = []
-            for i in vehicles:
-                vehicle_as_json.append(row_to_dict(i))
-            return make_response(vehicle_as_json)
-        else:
-            return make_response({'code': 1, 'message': 'Unknown user. Please login again'}, 404)
-
-
 class VehicleApi(Resource):
-    def get(self, vehicle_id):
-        args = tokenParser.parse_args()
+    def get(self, vehicle_id=None):
+        args = token_parser.parse_args()
         token = args['Authorization'].split()[1]
         user = User.query.filter_by(user_token=token).first()
         if bool(user):
-            vehicle = Vehicle.query.filter_by(user_id=user.user_id, vehicle_id=vehicle_id).first()
-            if vehicle:
-                data = DrivingData.query.filter_by(vehicle_id=vehicle.vehicle_id).all()
-                return make_response(row_to_dict(vehicle))
+            if vehicle_id:
+                vehicle = Vehicle.query.filter_by(user_id=user.user_id, vehicle_id=vehicle_id).first()
+                if vehicle:
+                    data = DrivingData.query.filter_by(vehicle_id=vehicle.vehicle_id).all()
+                    # return the data too
+                    return make_response(row_to_dict(vehicle))
+                else:
+                    return make_response({'code': 2, 'message': 'Vehicle not found'}, 404)
             else:
-                return make_response({'code': 2, 'message': 'Vehicle not found'}, 404)
+                vehicles = Vehicle.query.filter_by(user_id=user.user_id).all()
+                vehicle_as_json = []
+                for i in vehicles:
+                    vehicle_as_json.append(row_to_dict(i))
+                return make_response(vehicle_as_json)
         else:
             return make_response({'code': 1, 'message': 'Unknown user. Please login again'}, 404)
 
-
-class AddVehicleApi(Resource):
     def post(self):
-        args = parser.parse_args()
+        args = vehicle_parser.parse_args()
         vehicle_name = args['vehicle_name']
-        vehicle_number = args['vehicle_number']
         vehicle_image = args['vehicle_image']
         vehicle = Vehicle(
             vehicle_name=vehicle_name,
-            vehicle_number=vehicle_number,
             vehicle_image=vehicle_image)
         db.session.add(vehicle)
         db.session.commit()
         if vehicle.vehicle_id:
-            return make_response({'code': 1, 'message': 'Sucessfully added'}, 200)
+            return make_response({'code': 1, 'message': 'Successfully added'}, 200)
         else:
             return make_response({'code': 2, 'message': 'Something went wrong'}, 404)
 
 
 class DrivingDataApi(Resource):
     def post(self):
-        args = parser.parse_args()
+        args = driving_data_parser.parse_args()
         # Incase if it's not possible to add bearer token, put the token in the body
         # token_arg = tokenParser.parse_args()
         # token = token_arg['Authorization'].split()[1]
@@ -138,7 +130,7 @@ class DrivingDataApi(Resource):
             if data.data_id:
                 new_data = row_to_dict(DrivingData.query.filter_by(data_id=data.data_id).first())
                 socketio.emit('new_data', new_data, to=vehicle.vehicle_id)
-                return make_response({'code': 1, 'message': 'Sucessfully added'}, 200)
+                return make_response({'code': 1, 'message': 'Successfully added'}, 200)
             else:
                 return make_response({'code': 2, 'message': 'Something went wrong'}, 404)
         else:
@@ -154,7 +146,5 @@ def row_to_dict(row):
 
 api.add_resource(LoginApi, '/api/login')
 api.add_resource(RegisterApi, '/api/register')
-api.add_resource(VehicleListApi, '/api/vehicle')
-api.add_resource(AddVehicleApi, '/api/vehicle/add')
-api.add_resource(VehicleApi, '/api/vehicle/<int:vehicle_id>')
+api.add_resource(VehicleApi, '/api/vehicle', '/api/vehicle/<int:vehicle_id>')
 api.add_resource(DrivingDataApi, '/api/data')
