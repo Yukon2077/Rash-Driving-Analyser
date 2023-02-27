@@ -14,11 +14,10 @@ class LoginForm extends StatefulWidget {
 }
 
 class LoginFormState extends State<LoginForm> {
-
   final _loginFormKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  Future<String>? loginFuture;
+  late Future<String> loginFuture;
 
   @override
   void dispose() {
@@ -34,25 +33,26 @@ class LoginFormState extends State<LoginForm> {
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.all(12),
+              margin: const EdgeInsets.all(12),
               child: TextFormField(
                 controller: emailController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your email';
-                  } /*else if (!value.contains("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\$")) {
+                  }
+                  /*else if (!value.contains("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\$")) {
                     return 'Please enter a valid email';
                   }*/
                   return null;
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Email',
                 ),
               ),
             ),
             Container(
-              margin: EdgeInsets.all(12),
+              margin: const EdgeInsets.all(12),
               child: TextFormField(
                 controller: passwordController,
                 obscureText: true,
@@ -61,52 +61,37 @@ class LoginFormState extends State<LoginForm> {
                     return 'Please enter your password';
                   } else if (value.length < 8) {
                     return 'Password needs to be at least 8 characters';
-                  } /*else if (!value.contains('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}\$')) {
+                  }
+                  /*else if (!value.contains('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}\$')) {
                     return 'Password must contain a-z, A-Z and 0-9 characters at least once';
                   }*/
                   return null;
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Password',
                 ),
               ),
             ),
-            if (loginFuture == null)
-              Container(
-                width: double.infinity,
-                height: 48,
-                margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-                child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        if (_loginFormKey.currentState!.validate()) {
-                          String email = emailController.text;
-                          String password = passwordController.text;
-                          loginFuture = Api.login(email, password);
-                        }
-                      });
-                    },
-                    child: Text('Login')),
-              )
-            else
-              FutureBuilder(
-                  future: loginFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Container(
-                          width: 48,
-                          height: 48,
-                          margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-                          child: CircularProgressIndicator());
-                    }
+            FutureBuilder(
+                future: loginFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting ||
+                      snapshot.connectionState == ConnectionState.active) {
+                    return Container(
+                        width: 48,
+                        height: 48,
+                        margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                        child: const CircularProgressIndicator());
+                  }
+                  if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasError) {
                       return Column(
                         children: [
                           Container(
                             width: double.infinity,
                             height: 48,
-                            margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                            margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                             child: ElevatedButton(
                                 onPressed: () {
                                   setState(() {
@@ -118,10 +103,10 @@ class LoginFormState extends State<LoginForm> {
                                     }
                                   });
                                 },
-                                child: Text('Login')),
+                                child: const Text('Login')),
                           ),
                           Container(
-                            padding: EdgeInsets.all(20.0),
+                            padding: const EdgeInsets.all(20.0),
                             child: Text(
                               snapshot.error.toString(),
                               textAlign: TextAlign.center,
@@ -131,24 +116,30 @@ class LoginFormState extends State<LoginForm> {
                       );
                     } else if (snapshot.hasData) {
                       var body = jsonDecode(snapshot.data.toString());
-                      login(body['token']);
-                      Future.microtask(() {
-                        Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
-                      });
+                      SharedPreferences.getInstance().then(
+                          (prefs) => prefs.setString('token', body['token']));
+                      Navigator.of(context)
+                          .pushNamedAndRemoveUntil('/home', (route) => false);
                     }
-                    return Container(
-                        width: 48,
-                        height: 48,
-                        margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-                        child: CircularProgressIndicator());
-                  }),
+                  }
+                  return Container(
+                    width: double.infinity,
+                    height: 48,
+                    margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            if (_loginFormKey.currentState!.validate()) {
+                              String email = emailController.text;
+                              String password = passwordController.text;
+                              loginFuture = Api.login(email, password);
+                            }
+                          });
+                        },
+                        child: const Text('Login')),
+                  );
+                }),
           ],
         ));
   }
-
-  Future<void> login(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
-  }
-
 }

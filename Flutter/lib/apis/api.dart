@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,6 +77,36 @@ class Api {
         'Authorization': 'Bearer $token'
       },
     );
+    if (response.statusCode >= 200 && response.statusCode < 400) {
+      var vehicleDataJson = jsonDecode(response.body);
+      return vehicleDataJson;
+    } else {
+      var body = jsonDecode(response.body);
+      throw body['message'];
+    }
+  }
+
+  static Future<String> addVehicle(
+      String vehicleName, File? vehicleImage) async {
+    final prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? '';
+    if (token == '') throw 'Token missing. Please login again';
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${baseUrl}api/vehicle'),
+    );
+    request.headers.addAll({
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token'
+    });
+    request.fields['vehicle_name'] = vehicleName;
+    if (vehicleImage != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+          'vehicle_image', vehicleImage.path));
+    }
+    var response = await http.Response.fromStream(await request.send());
+
     if (response.statusCode >= 200 && response.statusCode < 400) {
       var vehicleDataJson = jsonDecode(response.body);
       return vehicleDataJson;

@@ -42,7 +42,7 @@ class HomeState extends State<Home> {
           child: FutureBuilder<List<VehicleModel>>(
               future: vehicleFuture,
               builder: (context, snapshot) {
-                if (snapshot.hasData || snapshot.hasError) {
+                if (snapshot.connectionState == ConnectionState.done) {
                   List<VehicleModel> vehicles =
                       snapshot.hasData ? snapshot.data! : [];
                   return RefreshIndicator(
@@ -64,7 +64,6 @@ class HomeState extends State<Home> {
                                     );
                                   }));
                 }
-
                 return const CircularProgressIndicator();
               })),
     );
