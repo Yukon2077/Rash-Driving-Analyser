@@ -20,7 +20,7 @@ class AddVehicleFormState extends State<AddVehicleForm> {
   var vehicleNameController = TextEditingController();
   var vehicleImageController = TextEditingController();
   File? _vehicleImage;
-  late Future<String> addVehicleFuture;
+  Future<String>? addVehicleFuture;
 
   @override
   void dispose() {
@@ -73,7 +73,22 @@ class AddVehicleFormState extends State<AddVehicleForm> {
             Container(
               margin: const EdgeInsets.all(12),
               child: Image.file(_vehicleImage!),
-            ),
+            ), (addVehicleFuture == null) ? Container(
+            width: double.infinity,
+            height: 48,
+            margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    if (_addVehicleFormKey.currentState!.validate()) {
+                      String vehicleName = vehicleNameController.text;
+                      addVehicleFuture =
+                          Api.addVehicle(vehicleName, _vehicleImage);
+                    }
+                  });
+                },
+                child: const Text('Add Vehicle')),
+          ) :
           FutureBuilder(
               future: addVehicleFuture,
               builder: (context, snapshot) {
@@ -136,7 +151,7 @@ class AddVehicleFormState extends State<AddVehicleForm> {
                           }
                         });
                       },
-                      child: const Text('Login')),
+                      child: const Text('Add Vehicle')),
                 );
               }),
         ],
@@ -147,6 +162,8 @@ class AddVehicleFormState extends State<AddVehicleForm> {
   void _pickImage(ImageSource imageSource) async {
     ImagePicker imagePicker = ImagePicker();
     var image = await imagePicker.pickImage(source: imageSource);
-    _vehicleImage = File(image!.path);
+    setState(() {
+      _vehicleImage = File(image!.path);
+    });
   }
 }

@@ -113,58 +113,8 @@ class RegisterFormState extends State<RegisterForm> {
                 ),
               ),
             ),
-            FutureBuilder(
-                future: registerFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      snapshot.connectionState == ConnectionState.active) {
-                    return Container(
-                        width: 48,
-                        height: 48,
-                        margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                        child: const CircularProgressIndicator());
-                  }
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      Column(
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: 48,
-                            margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    if (_registerFormKey.currentState!
-                                        .validate()) {
-                                      String name = nameController.text;
-                                      String email = emailController.text;
-                                      String password = passwordController.text;
-                                      registerFuture =
-                                          Api.register(name, email, password);
-                                    }
-                                  });
-                                },
-                                child: const Text('Register')),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Text(
-                              snapshot.error.toString(),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      );
-                    } else if (snapshot.hasData) {
-                      var body = jsonDecode(snapshot.data.toString());
-                      SharedPreferences.getInstance().then(
-                          (prefs) => prefs.setString('token', body['token']));
-                      Navigator.of(context)
-                          .pushNamedAndRemoveUntil('/home', (route) => false);
-                    }
-                  }
-                  return Container(
+            (registerFuture == null)
+                ? Container(
                     width: double.infinity,
                     height: 48,
                     margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
@@ -181,8 +131,79 @@ class RegisterFormState extends State<RegisterForm> {
                           });
                         },
                         child: const Text('Register')),
-                  );
-                }),
+                  )
+                : FutureBuilder(
+                    future: registerFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting ||
+                          snapshot.connectionState == ConnectionState.active) {
+                        return Container(
+                            width: 48,
+                            height: 48,
+                            margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                            child: const CircularProgressIndicator());
+                      }
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasError) {
+                          Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                height: 48,
+                                margin:
+                                    const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        if (_registerFormKey.currentState!
+                                            .validate()) {
+                                          String name = nameController.text;
+                                          String email = emailController.text;
+                                          String password =
+                                              passwordController.text;
+                                          registerFuture = Api.register(
+                                              name, email, password);
+                                        }
+                                      });
+                                    },
+                                    child: const Text('Register')),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Text(
+                                  snapshot.error.toString(),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          );
+                        } else if (snapshot.hasData) {
+                          var body = jsonDecode(snapshot.data.toString());
+                          SharedPreferences.getInstance().then((prefs) =>
+                              prefs.setString('token', body['token']));
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/home', (route) => false);
+                        }
+                      }
+                      return Container(
+                        width: double.infinity,
+                        height: 48,
+                        margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                        child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                if (_registerFormKey.currentState!.validate()) {
+                                  String name = nameController.text;
+                                  String email = emailController.text;
+                                  String password = passwordController.text;
+                                  registerFuture =
+                                      Api.register(name, email, password);
+                                }
+                              });
+                            },
+                            child: const Text('Register')),
+                      );
+                    }),
           ],
         ));
   }

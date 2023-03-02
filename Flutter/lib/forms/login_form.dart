@@ -17,7 +17,7 @@ class LoginFormState extends State<LoginForm> {
   final _loginFormKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  late Future<String> loginFuture;
+  Future<String>? loginFuture;
 
   @override
   void dispose() {
@@ -73,72 +73,92 @@ class LoginFormState extends State<LoginForm> {
                 ),
               ),
             ),
-            FutureBuilder(
-                future: loginFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      snapshot.connectionState == ConnectionState.active) {
-                    return Container(
-                        width: 48,
-                        height: 48,
-                        margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                        child: const CircularProgressIndicator());
-                  }
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return Column(
-                        children: [
-                          Container(
-                            width: double.infinity,
+            (loginFuture == null)
+                ? Container(
+              width: double.infinity,
+              height: 48,
+              margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_loginFormKey.currentState!.validate()) {
+                        String email = emailController.text;
+                        String password = passwordController.text;
+                        loginFuture = Api.login(email, password);
+                      }
+                    });
+                  },
+                  child: const Text('Login')),
+            )
+                : FutureBuilder(
+                    future: loginFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting ||
+                          snapshot.connectionState == ConnectionState.active) {
+                        return Container(
+                            width: 48,
                             height: 48,
                             margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    if (_loginFormKey.currentState!
-                                        .validate()) {
-                                      String email = emailController.text;
-                                      String password = passwordController.text;
-                                      loginFuture = Api.login(email, password);
-                                    }
-                                  });
-                                },
-                                child: const Text('Login')),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Text(
-                              snapshot.error.toString(),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
+                            child: const CircularProgressIndicator());
+                      }
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasError) {
+                          return Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                height: 48,
+                                margin:
+                                    const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        if (_loginFormKey.currentState!
+                                            .validate()) {
+                                          String email = emailController.text;
+                                          String password =
+                                              passwordController.text;
+                                          loginFuture =
+                                              Api.login(email, password);
+                                        }
+                                      });
+                                    },
+                                    child: const Text('Login')),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Text(
+                                  snapshot.error.toString(),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          );
+                        } else if (snapshot.hasData) {
+                          var body = jsonDecode(snapshot.data.toString());
+                          SharedPreferences.getInstance().then((prefs) =>
+                              prefs.setString('token', body['token']));
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/home', (route) => false);
+                        }
+                      }
+                      return Container(
+                        width: double.infinity,
+                        height: 48,
+                        margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                        child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                if (_loginFormKey.currentState!.validate()) {
+                                  String email = emailController.text;
+                                  String password = passwordController.text;
+                                  loginFuture = Api.login(email, password);
+                                }
+                              });
+                            },
+                            child: const Text('Login')),
                       );
-                    } else if (snapshot.hasData) {
-                      var body = jsonDecode(snapshot.data.toString());
-                      SharedPreferences.getInstance().then(
-                          (prefs) => prefs.setString('token', body['token']));
-                      Navigator.of(context)
-                          .pushNamedAndRemoveUntil('/home', (route) => false);
-                    }
-                  }
-                  return Container(
-                    width: double.infinity,
-                    height: 48,
-                    margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            if (_loginFormKey.currentState!.validate()) {
-                              String email = emailController.text;
-                              String password = passwordController.text;
-                              loginFuture = Api.login(email, password);
-                            }
-                          });
-                        },
-                        child: const Text('Login')),
-                  );
-                }),
+                    }),
           ],
         ));
   }
