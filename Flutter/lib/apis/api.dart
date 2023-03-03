@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/vehicle_model.dart';
 
 class Api {
-  static const String baseUrl = 'http://192.168.68.46/';
+  static const String baseUrl = 'http://192.168.81.150/';
 
   static Future<String> login(String email, String password) async {
     var response = await http.post(

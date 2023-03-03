@@ -1,7 +1,7 @@
 import uuid
 
 from werkzeug.datastructures import FileStorage
-from flask import make_response
+from flask import make_response, request
 from flask_restful import reqparse, Resource
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -92,7 +92,7 @@ class VehicleApi(Resource):
     def post(self):
         args = vehicle_parser.parse_args()
         vehicle_name = args['vehicle_name']
-        vehicle_image = args['vehicle_image']
+        vehicle_image = request.files.get('vehicle_image')
         vehicle = Vehicle(
             vehicle_name=vehicle_name,
             vehicle_image=vehicle_image)

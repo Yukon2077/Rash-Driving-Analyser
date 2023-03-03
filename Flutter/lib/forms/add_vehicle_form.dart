@@ -73,22 +73,7 @@ class AddVehicleFormState extends State<AddVehicleForm> {
             Container(
               margin: const EdgeInsets.all(12),
               child: Image.file(_vehicleImage!),
-            ), (addVehicleFuture == null) ? Container(
-            width: double.infinity,
-            height: 48,
-            margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-            child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    if (_addVehicleFormKey.currentState!.validate()) {
-                      String vehicleName = vehicleNameController.text;
-                      addVehicleFuture =
-                          Api.addVehicle(vehicleName, _vehicleImage);
-                    }
-                  });
-                },
-                child: const Text('Add Vehicle')),
-          ) :
+            ),
           FutureBuilder(
               future: addVehicleFuture,
               builder: (context, snapshot) {
@@ -133,8 +118,7 @@ class AddVehicleFormState extends State<AddVehicleForm> {
                     );
                   } else if (snapshot.hasData) {
                     var body = jsonDecode(snapshot.data.toString());
-                    Navigator.of(context)
-                        .pop();
+                    Navigator.of(context).pop();
                   }
                 }
                 return Container(
