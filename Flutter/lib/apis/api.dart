@@ -7,9 +7,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/vehicle_model.dart';
 
 class Api {
-  static const String baseUrl = 'http://192.168.81.150/';
+  static String? baseUrl;
+
+  static Future<void> getIP() async {
+    SharedPreferences.getInstance()
+        .then((prefs) => baseUrl = prefs.getString('baseUrl'));
+  }
 
   static Future<String> login(String email, String password) async {
+    await getIP();
     var response = await http.post(
       Uri.parse('${baseUrl}api/login'),
       headers: <String, String>{
@@ -26,6 +32,7 @@ class Api {
 
   static Future<String> register(
       String name, String email, String password) async {
+    await getIP();
     var response = await http.post(
       Uri.parse('${baseUrl}api/register'),
       headers: <String, String>{
@@ -43,6 +50,7 @@ class Api {
   }
 
   static Future<List<VehicleModel>> getVehicles() async {
+    await getIP();
     final prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token') ?? '';
     if (token == '') throw 'Token missing. Please login again';
@@ -66,6 +74,7 @@ class Api {
   }
 
   static Future<String> getVehicleData(int id) async {
+    await getIP();
     final prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token') ?? '';
     if (token == '') throw 'Token missing. Please login again';
@@ -88,6 +97,7 @@ class Api {
 
   static Future<String> addVehicle(
       String vehicleName, File? vehicleImage) async {
+    await getIP();
     final prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token') ?? '';
     if (token == '') throw 'Token missing. Please login again';

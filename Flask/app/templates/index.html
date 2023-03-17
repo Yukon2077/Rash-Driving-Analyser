@@ -9,7 +9,7 @@
     <h4>Analyse your driving skills</h4>
 
     {% if 'user_id' not in session %}
-    <a href='/login' class="button">Login</a><a href='/register' class="button">Register</a>
+    <div><a href='/login' class="button">Login</a><a href='/register' class="button">Register</a></div>
     {% else %}
     <a href='/dashboard' class="button">Dashboard</a>
     {% endif %}

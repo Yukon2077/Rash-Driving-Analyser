@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rash_driving_analyser/routes/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:rash_driving_analyser/routes/add_vehicle.dart';
@@ -23,9 +24,10 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.blueGrey),
+      //theme: ThemeData(primarySwatch: Colors.blueGrey),
       title: 'Rash Driving Analyser',
-      initialRoute: (token != '' || token.isNotEmpty) ? '/home' : '/login',
+      initialRoute:
+          '/testing', //(token != '' || token.isNotEmpty) ? '/home' : '/login',
       routes: {
         '/home': (context) => const Home(),
         '/login': (context) => const Login(),
@@ -33,6 +35,7 @@ class App extends StatelessWidget {
         '/vehicle': (context) => const VehicleDetail(),
         '/vehicle/add': (context) => const AddVehicle(),
         '/profile': (context) => const Profile(),
+        '/testing': (context) => Testing(),
       },
     );
   }

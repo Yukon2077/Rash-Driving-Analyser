@@ -1,9 +1,13 @@
+import os
 import uuid
+import pickle
+import pandas as pd
 
 from werkzeug.datastructures import FileStorage
-from flask import make_response, request
+from flask import current_app, make_response, request
 from flask_restful import reqparse, Resource
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 
 from .. import db, api, socketio
 from ..models import User, Vehicle, DrivingData
@@ -18,7 +22,8 @@ user_parser.add_argument('password', type=str)
 
 vehicle_parser = reqparse.RequestParser()
 vehicle_parser.add_argument('vehicle_name', type=str)
-vehicle_parser.add_argument('vehicle_image', type=FileStorage, location='files')
+vehicle_parser.add_argument(
+    'vehicle_image', type=FileStorage, location='files')
 
 driving_data_parser = reqparse.RequestParser()
 driving_data_parser.add_argument('token', type=str)
@@ -53,7 +58,8 @@ class RegisterApi(Resource):
         email = args['email']
         password = args['password']
         if not bool(User.query.filter_by(email=email).first()):
-            user = User(name=name, email=email, password=generate_password_hash(password))
+            user = User(name=name, email=email,
+                        password=generate_password_hash(password))
             db.session.add(user)
             db.session.commit()
             if user.user_id:
@@ -73,9 +79,11 @@ class VehicleApi(Resource):
         user = User.query.filter_by(user_token=token).first()
         if bool(user):
             if vehicle_id:
-                vehicle = Vehicle.query.filter_by(user_id=user.user_id, vehicle_id=vehicle_id).first()
+                vehicle = Vehicle.query.filter_by(
+                    user_id=user.user_id, vehicle_id=vehicle_id).first()
                 if vehicle:
-                    data = DrivingData.query.filter_by(vehicle_id=vehicle.vehicle_id).all()
+                    data = DrivingData.query.filter_by(
+                        vehicle_id=vehicle.vehicle_id).all()
                     # return the data too
                     return make_response(row_to_dict(vehicle))
                 else:
@@ -90,18 +98,31 @@ class VehicleApi(Resource):
             return make_response({'code': 1, 'message': 'Unknown user. Please login again'}, 404)
 
     def post(self):
-        args = vehicle_parser.parse_args()
-        vehicle_name = args['vehicle_name']
-        vehicle_image = request.files.get('vehicle_image')
-        vehicle = Vehicle(
-            vehicle_name=vehicle_name,
-            vehicle_image=vehicle_image)
-        db.session.add(vehicle)
-        db.session.commit()
-        if vehicle.vehicle_id:
-            return make_response({'code': 1, 'message': 'Successfully added'}, 200)
+        token = request.headers.get('Authorization').split()[1]
+        user = User.query.filter_by(user_token=token).first()
+        if bool(user):
+            vehicle_name = request.form.get('vehicle_name')
+            vehicle_image = request.files.get('vehicle_image')
+            vehicle = Vehicle(
+                user_id=user.user_id,
+                vehicle_name=vehicle_name)
+            if vehicle_image:
+                vehicle_image.filename = str(uuid.uuid4()) + '.' + \
+                    vehicle_image.filename.rsplit('.', 1)[1]
+                filename = secure_filename(vehicle_image.filename)
+                path = current_app.config['UPLOAD_FOLDER']
+                if not os.path.exists(path):
+                    os.makedirs(path)
+                vehicle_image.save(os.path.join(path, filename))
+                vehicle.vehicle_image = filename
+            db.session.add(vehicle)
+            db.session.commit()
+            if vehicle.vehicle_id:
+                return make_response({'code': 1, 'message': 'Successfully added'}, 200)
+            else:
+                return make_response({'code': 2, 'message': 'Something went wrong'}, 404)
         else:
-            return make_response({'code': 2, 'message': 'Something went wrong'}, 404)
+            return make_response({'code': 2, 'message': 'Please login again'}, 404)
 
 
 class DrivingDataApi(Resource):
@@ -118,17 +139,27 @@ class DrivingDataApi(Resource):
         longitude = args['longitude']
         if token:
             vehicle = Vehicle.query.filter_by(vehicle_token=token).first()
+            with open('model.pickle', 'rb') as data_file:
+                model = pickle.load(data_file)
+            input_data = {'driving_vehicle_speed': driving_vehicle_speed,
+                          'nearby_vehicle_speed': nearby_vehicle_speed,
+                          'nearby_vehicle_distance': nearby_vehicle_distance}
+            is_rash = model.predict(pd.DataFrame(input_data, index=[0]))[0]
+            if (driving_vehicle_speed < nearby_vehicle_speed):
+                is_rash = False
             data = DrivingData(
                 vehicle_id=vehicle.vehicle_id,
                 driving_vehicle_speed=driving_vehicle_speed,
                 nearby_vehicle_speed=nearby_vehicle_speed,
                 nearby_vehicle_distance=nearby_vehicle_distance,
                 latitude=latitude,
-                longitude=longitude)
+                longitude=longitude,
+                is_rash=is_rash)
             db.session.add(data)
             db.session.commit()
             if data.data_id:
-                new_data = row_to_dict(DrivingData.query.filter_by(data_id=data.data_id).first())
+                new_data = row_to_dict(DrivingData.query.filter_by(
+                    data_id=data.data_id).first())
                 socketio.emit('new_data', new_data, to=vehicle.vehicle_id)
                 return make_response({'code': 1, 'message': 'Successfully added'}, 200)
             else:

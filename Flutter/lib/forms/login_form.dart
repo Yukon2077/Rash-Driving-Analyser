@@ -117,7 +117,7 @@ class LoginFormState extends State<LoginForm> {
                     } else if (snapshot.hasData) {
                       var body = jsonDecode(snapshot.data.toString());
                       SharedPreferences.getInstance().then(
-                              (prefs) => prefs.setString('token', body['token']));
+                          (prefs) => prefs.setString('token', body['token']));
                       Navigator.of(context)
                           .pushNamedAndRemoveUntil('/home', (route) => false);
                     }

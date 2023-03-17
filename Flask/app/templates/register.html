@@ -14,6 +14,7 @@
         {{ register_form.verify_password(id="verify_password", class="input-box", placeholder="Verify Password") }}
         {{ register_form.submit(class="button", id="register-button") }}
     </form>
+    <a href="/login" class="text-link">Already have an account? Click here to login instead</a>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul class=flashes>

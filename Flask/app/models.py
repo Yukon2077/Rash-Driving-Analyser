@@ -36,6 +36,7 @@ class DrivingData(db.Model):
     nearby_vehicle_distance = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
+    is_rash = db.Column(db.Boolean, nullable=False)
     datetime = db.Column(db.DateTime, nullable=False, server_default=func.now())
 
     def __repr__(self):

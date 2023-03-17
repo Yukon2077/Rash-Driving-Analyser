@@ -5,12 +5,13 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 {% if vehicle.vehicle_image != None %}
 <style type="text/css">
-		body {
-			background: linear-gradient(rgba(200, 227, 255, 0.75), rgba(200, 227, 255, 0.75)), url("{{ '/uploads/' + vehicle.vehicle_image }}");
-			background-size:cover;
-			background-position: center center;
-			background-attachment: fixed;
-		}
+	body {
+		background: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)),
+		url("{{ '/uploads/' + vehicle.vehicle_image }}");
+		background-size: cover;
+		background-position: center center;
+		background-attachment: fixed;
+	}
 </style>
 {% endif %}
 
@@ -21,148 +22,175 @@
 {% block body %}
 
 <section class="flex-start">
-    <h2>{{ vehicle.vehicle_name }}</h2>
+	<h2>{{ vehicle.vehicle_name }}</h2>
 </section>
 
 <section>
-    <h2>Analysis</h2>
-    <div class="grid-analysis-list">
+	<h2>Analysis</h2>
+	<div class="grid-analysis-list">
 
-        <div class="card-analysis">
-            <div id="PieChart" class="card-image"></div>
-            <script type="text/javascript">
+		<div class="card-analysis">
+			{% if data %}
+			<!-- <iframe
+			src="https://www.google.com/maps/search/?api=1&query={{ data[0].latitude }}%2C{{ data[0].longitude }}"
+				width="100%" height="100%" frameborder="0"
+				style="border:0; padding-top:12px; padding-left:12px; padding-right:12px;" allowfullscreen>
+			</iframe> -->
+			<div id="map"
+				style="border:0; margin-top:12px; margin-left:12px; margin-right:12px;">
+			</div>
+			<h3 class="text-center">Last known location</h3>
+			<script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
 
-			      google.charts.load('current', {'packages':['corechart']});
-			      google.charts.setOnLoadCallback(drawChart);
+			<script>
+				var LATITUDE = {{ data[0].latitude }};
+				var LONGITUDE = {{ data[0].longitude }};
+				var map = L.map('map').setView([LATITUDE, LONGITUDE], 14);
 
-			      function drawChart() {
-			        var data = new google.visualization.DataTable();
-			        data.addColumn('string', 'Incidents');
-			        data.addColumn('number', 'Count');
-			        data.addRows([
-			          ['Close Calls', 8],
-			          ['Excessive Speeding', 4],
-			          ['Hard Cornering', 3],
-			          ['Quick Starts', 2],
-			          ['Harsh Braking', 3]
-			        ]);
+				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+				}).addTo(map);
 
-			        var options = {
-			        	'title':'What Kind Of Many Incidents Happened',
-			        	backgroundColor: {
-			        		fillOpacity: 0,
-			        	},
-			    	};
+				L.marker([LATITUDE, LONGITUDE]).addTo(map);
+			</script>
 
-			        var chart = new google.visualization.PieChart(document.getElementById('PieChart'));
-			        chart.draw(data, options);
-			      }
-            </script>
-        </div>
+			{% else %}
+			<div class="text-center icon-text">
+				<div>
+					<i class="bi-question-circle icon-display"></i>
+					<h3>Unknown location</h3>
+				</div>
+			</div>
+			{% endif %}
+		</div>
 
-        <div class="card-analysis">
-            <div id="BarChart" class="card-image"></div>
-            <script type="text/javascript">
+		<!-- <div class="card-analysis">
+			<div id="PieChart" class="card-image"></div>
+			<script type="text/javascript">
 
-			      google.charts.load('current', {'packages':['corechart']});
-			      google.charts.setOnLoadCallback(drawChart);
+				google.charts.load('current', { 'packages': ['corechart'] });
+				google.charts.setOnLoadCallback(drawChart);
 
-			      function drawChart() {
-			        var data = new google.visualization.DataTable();
-			        data.addColumn('string', 'Incidents');
-			        data.addColumn('number', 'Count');
-			        data.addRows([
-			          ['Close Calls', 8],
-			          ['Excessive Speeding', 4],
-			          ['Hard Cornering', 3],
-			          ['Quick Starts', 2],
-			          ['Harsh Braking', 3]
-			        ]);
+				function drawChart() {
+					var data = new google.visualization.DataTable();
+					data.addColumn('string', 'Incidents');
+					data.addColumn('number', 'Count');
+					data.addRows([
+						['Close Calls', 8],
+						['Excessive Speeding', 4],
+						['Hard Cornering', 3],
+						['Quick Starts', 2],
+						['Harsh Braking', 3]
+					]);
 
-			        var options = {
-			        	'title':'What Kind Of Many Incidents Happened',
-			        	backgroundColor: {
-			        		fillOpacity: 0,
-			        	},
-			    	};
+					var options = {
+						'title': 'What Kind Of Many Incidents Happened',
+						backgroundColor: {
+							fillOpacity: 0,
+						},
+					};
 
-			        var chart = new google.visualization.BarChart(document.getElementById('BarChart'));
-			        chart.draw(data, options);
-			      }
-            </script>
-        </div>
+					var chart = new google.visualization.PieChart(document.getElementById('PieChart'));
+					chart.draw(data, options);
+				}
+			</script>
+		</div>
 
-        <div class="card-analysis">
-            <div id="LineChart" class="card-image"></div>
-            <script type="text/javascript">
-                google.charts.load('current', {packages: ['corechart', 'line']});
-                google.charts.setOnLoadCallback(drawBasic);
+		<div class="card-analysis">
+			<div id="BarChart" class="card-image"></div>
+			<script type="text/javascript">
 
-                function drawBasic() {
+				google.charts.load('current', { 'packages': ['corechart'] });
+				google.charts.setOnLoadCallback(drawChart);
 
-                      var data = new google.visualization.DataTable();
-                      data.addColumn('date', 'Date');
-                      data.addColumn('number', 'Incidents');
+				function drawChart() {
+					var data = new google.visualization.DataTable();
+					data.addColumn('string', 'Incidents');
+					data.addColumn('number', 'Count');
+					data.addRows([
+						['Close Calls', 8],
+						['Excessive Speeding', 4],
+						['Hard Cornering', 3],
+						['Quick Starts', 2],
+						['Harsh Braking', 3]
+					]);
 
-                      data.addRows([
-                        [new Date(2022, 10, 15), 2],
-                        [new Date(2022, 10, 16), 10],
-                        [new Date(2022, 10, 17), 23],
-                        [new Date(2022, 10, 18), 17],
-                        [new Date(2022, 10, 19), 12],
-                        [new Date(2022, 10, 20), 3],
-                        [new Date(2022, 10, 21), 11],
-                        [new Date(2022, 10, 22), 27],
-                        [new Date(2022, 10, 23), 23],
-                        [new Date(2022, 10, 24), 25],
-                        [new Date(2022, 10, 25), 18],
-                        [new Date(2022, 10, 26), 20],
-                        [new Date(2022, 10, 27), 4],
-                        [new Date(2022, 10, 28), 19],
-                        [new Date(2022, 10, 29), 24],
-                        [new Date(2022, 10, 30), 20],
-                      ]);
+					var options = {
+						'title': 'What Kind Of Many Incidents Happened',
+						backgroundColor: {
+							fillOpacity: 0,
+						},
+					};
 
-                      var options = {
-                      lineWidth: 3,
-                      backgroundColor: {
-			        		fillOpacity: 0,
-			        	},
-                        hAxis: {
-                          title: 'Date'
-                        },
-                        vAxis: {
-                          title: 'Incidents'
-                        }
-                      };
+					var chart = new google.visualization.BarChart(document.getElementById('BarChart'));
+					chart.draw(data, options);
+					
+				}
+			</script>
+		</div> -->
 
-                      var chart = new google.visualization.LineChart(document.getElementById('LineChart'));
+		<div class="card-analysis">
+			<div id="LineChart" class="card-image"></div>
+			<script type="text/javascript">
+				google.charts.load('current', { packages: ['corechart', 'line'] });
+				google.charts.setOnLoadCallback(drawBasic);
 
-                      chart.draw(data, options);
-                    }
+				function drawBasic() {
 
-            </script>
-        </div>
+					var data = new google.visualization.DataTable();
+					data.addColumn('date', 'Date');
+					data.addColumn('number', 'Incidents');
 
-    </div>
+					data.addRows([
+					{% for i in number_of_incidents_per_day %}
+						[new Date(Date.parse("{{ i[0] }}")), {{ i[1] }}],
+					{% endfor %}
+					]);
+
+					var options = {
+						lineWidth: 3,
+						backgroundColor: {
+							fillOpacity: 0,
+						},
+						hAxis: {
+							title: 'Date'
+						},
+						vAxis: {
+							title: 'Incidents'
+						}
+					};
+
+					var chart = new google.visualization.LineChart(document.getElementById('LineChart'));
+
+					chart.draw(data, options);
+				}
+
+			</script>
+		</div>
+
+	</div>
 </section>
 
 <section>
 	<h2>Raw Driving Data</h2>
-    <div class="card-table">
-			<table>
-				<thead>
-					<tr>
-						<th>Data id</th>
-						<th>Driving vehicle speed</th>
-						<th>Nearby vehicle speed</th>
-						<th>Nearby vehicle distance</th>
-						<th>Location</th>
-					</tr>
-				</thead>
+	<div class="card-table">
+		<table>
+			<thead>
+				<tr>
+					<th>Data id</th>
+					<th>Driving vehicle speed</th>
+					<th>Nearby vehicle speed</th>
+					<th>Nearby vehicle distance</th>
+					<th>Location</th>
+					<th>Is Rash?</th>
+				</tr>
+			</thead>
 
-				<tbody id="table-body">
-				<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+			<tbody id="table-body">
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+					integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+					crossorigin="anonymous"></script>
 				<script type="text/javascript" charset="utf-8">
 					var socket = io();
 					var vehicle_id = {{ vehicle.vehicle_id }};
@@ -184,31 +212,46 @@
 						var cell_nearby_vehicle_speed = row.insertCell(2);
 						var cell_nearby_vehicle_distance = row.insertCell(3);
 						var cell_location = row.insertCell(4);
+						var cell_is_rash = row.insertCell(5);
 
 						cell_data_id.innerHTML = data.data_id;
 						cell_driving_vehicle_speed.innerHTML = data.driving_vehicle_speed;
 						cell_nearby_vehicle_speed.innerHTML = data.nearby_vehicle_speed;
 						cell_nearby_vehicle_distance.innerHTML = data.nearby_vehicle_distance;
 						cell_location.innerHTML = "<a href=\"https://www.google.com/maps/search/?api=1&query=" + data.latitude + "%2C" + data.longitude + "\" target=\"_blank\"><i class=\"bi bi-geo-alt-fill\"></i></a>" + data.latitude + " | " + data.longitude;
+						cell_is_rash.innerHTML = data.is_rash;
+
+						var LATITUDE = data.latitude;
+						var LONGITUDE = data.longitude;
+						var map = L.map('map').setView([LATITUDE, LONGITUDE], 14);
+
+						L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+							attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+						}).addTo(map);
+
+						L.marker([LATITUDE, LONGITUDE]).addTo(map);
 					});
 
 				</script>
-					{% for i in data %}
+				{% for i in data %}
 
-					<tr>
-						<td>{{ i.data_id }}</td>
-						<td>{{ i.driving_vehicle_speed }}</td>
-						<td>{{ i.nearby_vehicle_speed }}</td>
-						<td>{{ i.nearby_vehicle_distance }}</td>
-						<td><a href="https://www.google.com/maps/search/?api=1&query={{ i.latitude }}%2C{{ i.longitude }}" target="_blank"><i class="bi bi-geo-alt-fill"></i></a> {{ i.latitude }} | {{ i.longitude }}</td>
-					</tr>
+				<tr>
+					<td>{{ i.data_id }}</td>
+					<td>{{ i.driving_vehicle_speed }}</td>
+					<td>{{ i.nearby_vehicle_speed }}</td>
+					<td>{{ i.nearby_vehicle_distance }}</td>
+					<td><a href="https://www.google.com/maps/search/?api=1&query={{ i.latitude }}%2C{{ i.longitude }}"
+							target="_blank"><i class="bi bi-geo-alt-fill"></i></a> {{ i.latitude }} | {{ i.longitude }}
+					</td>
+					<td>{{ i.is_rash }}</td>
+				</tr>
 
-					{% endfor %}
-				</tbody>
+				{% endfor %}
+			</tbody>
 
-			</table>
+		</table>
 
-		</div>
+	</div>
 </section>
 
 {% endblock body %}

@@ -2,6 +2,7 @@ import os
 import uuid
 
 from flask import render_template, session, redirect, url_for, send_from_directory, current_app, flash
+from sqlalchemy import func
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
@@ -85,18 +86,14 @@ def dashboard():
 def connect():
     if 'user_id' in session:
         connect_form = ConnectForm()
-        current_app.logger.debug('before validation')
         if connect_form.validate_on_submit():
-            current_app.logger.debug('validation started')
             name = connect_form.vehicle_name.data
             image = connect_form.vehicle_image.data
             vehicle = Vehicle(
                 user_id=session['user_id'],
                 vehicle_name=name,
             )
-            current_app.logger.debug('before image check')
             if image:
-                current_app.logger.debug('image checked and in process')
                 image.filename = str(uuid.uuid4()) + '.' + image.filename.rsplit('.', 1)[1]
                 filename = secure_filename(image.filename)
                 path = current_app.config['UPLOAD_FOLDER']
@@ -106,7 +103,6 @@ def connect():
                 vehicle.vehicle_image = filename
             db.session.add(vehicle)
             db.session.commit()
-            current_app.logger.debug('vehicle added')
             return redirect(url_for('.dashboard'))
         return render_template('connect.html', connect_form=connect_form)
     else:
@@ -118,7 +114,9 @@ def view_vehicle(vehicle_id):
     if 'user_id' in session:
         vehicle = Vehicle.query.filter_by(user_id=session['user_id'], vehicle_id=vehicle_id).first()
         data = DrivingData.query.order_by(DrivingData.data_id.desc()).filter_by(vehicle_id=vehicle.vehicle_id).all()
-        return render_template('vehicle.html', vehicle=vehicle, data=data)
+        number_of_incidents_per_day = db.session.query(func.DATE(DrivingData.datetime), func.count('*')).filter(DrivingData.is_rash == True or DrivingData.is_rash == 1).group_by(func.DATE(DrivingData.datetime)).all()
+        current_app.logger.error(number_of_incidents_per_day)
+        return render_template('vehicle.html', vehicle=vehicle, data=data, number_of_incidents_per_day = number_of_incidents_per_day)
     else:
         return redirect(url_for('.login'))
 

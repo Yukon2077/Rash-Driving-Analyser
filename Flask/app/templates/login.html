@@ -12,6 +12,7 @@
         {{ login_form.password(id="password", class="input-box", placeholder="Password") }}
         {{ login_form.submit(class="button", id="login-button") }}
     </form>
+    <a href="/register" class="text-link">Don't have an account? Click here to register</a>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul class=flashes>

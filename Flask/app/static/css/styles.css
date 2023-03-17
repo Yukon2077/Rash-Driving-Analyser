@@ -173,6 +173,18 @@ footer {
 	padding: 0px 10px;
 }
 
+.icon-text {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 60vh;
+}
+
+.icon-display {
+	text-align: center;
+	font-size: 64px;
+}
+
 .text-center {
 	text-align: center;
 }
@@ -373,4 +385,17 @@ td, th {
 .bi:hover {
 	color: #557799;
 	transform: scale(1.5);
+}
+
+
+.text-link {
+	font-size: 14px;
+	color: #225588;
+	text-decoration: none;
+	transition-duration: 0.1s;
+}
+
+.text-link:hover {
+	padding-bottom: 4px;
+	border-bottom: 2px solid #225588;
 }
