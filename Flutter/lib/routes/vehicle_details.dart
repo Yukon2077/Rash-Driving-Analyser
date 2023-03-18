@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rash_driving_analyser/models/vehicle_model.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
 
 import '../apis/api.dart';
 
@@ -51,13 +53,29 @@ class VehicleDetailState extends State<VehicleDetail> {
           },
           body: Center(
             child: Column(children: [
-              SfCircularChart(series: <CircularSeries>[
-                // Render pie chart
-                PieSeries<ChartData, String>(
-                    dataSource: chartData,
-                    xValueMapper: (ChartData data, _) => data.x,
-                    yValueMapper: (ChartData data, _) => data.y)
-              ]),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: Card(
+                  child: FlutterMap(
+                    options: MapOptions(
+                      zoom: 12.0,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: Card(
+                  child: SfCircularChart(series: <CircularSeries>[
+                    // Render pie chart
+                    PieSeries<ChartData, String>(
+                        dataSource: chartData,
+                        xValueMapper: (ChartData data, _) => data.x,
+                        yValueMapper: (ChartData data, _) => data.y)
+                  ]),
+                ),
+              ),
             ]),
           )),
     );
