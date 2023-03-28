@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rash_driving_analyser/models/vehicle_model.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
 
 import '../apis/api.dart';
 

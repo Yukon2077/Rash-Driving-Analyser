@@ -41,7 +41,7 @@ history = model.fit(train_X, train_Y, epochs=100, batch_size=32, verbose=2)
 
 train_predict = model.predict(train_X)
 test_predict = model.predict(test_X)
-# print('X\n\n\n', test_X, '\n\n\nY\n\n\n', test_predict)
+print('X\n\n\n', train_X, '\n\n\nY\n\n\n', test_X)
 
 train_predict = scaler.inverse_transform(train_predict)
 train_Y = scaler.inverse_transform(train_Y)

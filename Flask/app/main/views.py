@@ -5,6 +5,8 @@ from flask import render_template, session, redirect, url_for, send_from_directo
 from sqlalchemy import func
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
+from keras.models import load_model
+from sklearn.preprocessing import MinMaxScaler
 
 from . import main
 from .forms import LoginForm, RegisterForm, ConnectForm
@@ -115,8 +117,19 @@ def view_vehicle(vehicle_id):
         vehicle = Vehicle.query.filter_by(user_id=session['user_id'], vehicle_id=vehicle_id).first()
         data = DrivingData.query.order_by(DrivingData.data_id.desc()).filter_by(vehicle_id=vehicle.vehicle_id).all()
         number_of_incidents_per_day = db.session.query(func.DATE(DrivingData.datetime), func.count('*')).filter(DrivingData.is_rash == True or DrivingData.is_rash == 1).group_by(func.DATE(DrivingData.datetime)).all()
-        current_app.logger.error(number_of_incidents_per_day)
-        return render_template('vehicle.html', vehicle=vehicle, data=data, number_of_incidents_per_day = number_of_incidents_per_day)
+        number_of_incidents_per_day.pop(0)
+        line_chart_data = number_of_incidents_per_day
+        number_of_incidents_per_day =  [[row[1]] for row in number_of_incidents_per_day]
+        scaler = MinMaxScaler(feature_range=(0, 1))
+        scaled_data = scaler.fit_transform(number_of_incidents_per_day)
+        path = current_app.config['UPLOAD_FOLDER']
+        parent_dir = os.path.dirname(path)
+        model = load_model(parent_dir + '/models/' + str(vehicle_id) + '.h5')
+        prediction = model.predict(scaled_data)
+        unscaled_prediction = scaler.inverse_transform(prediction)
+        prediction_for_tomorrow = int(prediction[-1][0]*100)
+        current_app.logger.error(prediction_for_tomorrow)
+        return render_template('vehicle.html', vehicle=vehicle, data=data, number_of_incidents_per_day = line_chart_data, prediction_for_tomorrow = prediction_for_tomorrow)
     else:
         return redirect(url_for('.login'))
 
@@ -136,3 +149,9 @@ def download_file(image):
 def after_request(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     return response
+
+def rows_to_dict(row):
+    d = []
+    for column in row.__table__.columns:
+        d[column.name] = str(getattr(row, column.name))
+    return d
