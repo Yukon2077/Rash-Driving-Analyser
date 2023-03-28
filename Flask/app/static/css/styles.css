@@ -297,7 +297,7 @@ footer {
 .card-analysis {
 	display: grid;
 	grid-template-rows: 400px;
-	background: rgba(170, 204, 238, 0.75);
+	background: rgba(170, 204, 238, 0.85);
 }
 
 .card {
@@ -360,7 +360,7 @@ footer {
 .card-table {
 	padding: 12px;
 	width: 100%;
-	background: rgba(170, 204, 238, 0.75);
+	background: rgba(170, 204, 238, 0.85);
 }
 
 table {
@@ -398,6 +398,19 @@ td, th {
 .text-link:hover {
 	padding-bottom: 4px;
 	border-bottom: 2px solid #225588;
+}
+
+.high-risk {
+	background-color: rgba(255, 0, 0, 0.85);
+	color: white;
+}
+
+.medium-risk {
+	background-color: rgba(255, 255, 0, 0.85);
+}
+
+.low-risk {
+	background-color: rgba(82, 255, 47, 0.85);
 }
 
 #PredictionForTomorrow {

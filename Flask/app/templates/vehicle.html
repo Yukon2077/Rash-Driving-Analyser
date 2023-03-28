@@ -169,7 +169,7 @@
 			</script>
 		</div>
 
-		<div class="card-analysis">
+		<div class="card-analysis {% if prediction_for_tomorrow > 75 %}high-risk{% elif prediction_for_tomorrow > 50 %}medium-risk{% else %}low-risk{% endif %}">
 			<div id="PredictionForTomorrow">
 				{{ prediction_for_tomorrow }}% risk for tomorrow
 			</div>
