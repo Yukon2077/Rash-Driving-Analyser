@@ -35,7 +35,16 @@ class HomeState extends State<Home> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamed('/vehicle/add'),
+        onPressed: () async {
+          var result = await Navigator.of(context).pushNamed('/vehicle/add');
+          if (!mounted) return;
+          debugPrint('Before Snack Creation');
+          var snackbar = SnackBar(content: Text(result as String));
+          ScaffoldMessenger.of(context)
+            ..removeCurrentSnackBar()
+            ..showSnackBar(snackbar);
+          _refresh();
+        },
         child: const Icon(Icons.add),
       ),
       body: Center(

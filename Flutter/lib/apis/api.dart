@@ -73,7 +73,7 @@ class Api {
     }
   }
 
-  static Future<String> getVehicleData(int id) async {
+  static Future<Map<String, dynamic>> getVehicleData(int id) async {
     await getIP();
     final prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token') ?? '';
@@ -119,7 +119,7 @@ class Api {
 
     if (response.statusCode >= 200 && response.statusCode < 400) {
       var vehicleDataJson = jsonDecode(response.body);
-      return vehicleDataJson;
+      return vehicleDataJson['message'];
     } else {
       var body = jsonDecode(response.body);
       throw body['message'];

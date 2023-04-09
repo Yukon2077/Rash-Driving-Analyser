@@ -54,22 +54,32 @@ class AddVehicleFormState extends State<AddVehicleForm> {
                 ),
               ),
             ),
+            const Text(
+              'Pick a image for your vehicle (Optional)',
+              textAlign: TextAlign.center,
+            ),
             Row(
               children: [
-                Container(
-                  margin: const EdgeInsets.all(12),
-                  child: ElevatedButton.icon(
-                    onPressed: () => _pickImage(ImageSource.gallery),
-                    label: const Text('Gallery'),
-                    icon: const Icon(Icons.browse_gallery),
+                Expanded(
+                  child: Container(
+                    height: 48,
+                    margin: const EdgeInsets.fromLTRB(12, 12, 6, 12),
+                    child: ElevatedButton.icon(
+                      onPressed: () => _pickImage(ImageSource.gallery),
+                      label: const Text('Gallery'),
+                      icon: const Icon(Icons.browse_gallery),
+                    ),
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.all(12),
-                  child: ElevatedButton.icon(
-                    onPressed: () => _pickImage(ImageSource.camera),
-                    label: const Text('Camera'),
-                    icon: const Icon(Icons.camera),
+                Expanded(
+                  child: Container(
+                    height: 48,
+                    margin: const EdgeInsets.fromLTRB(6, 12, 12, 12),
+                    child: ElevatedButton.icon(
+                      onPressed: () => _pickImage(ImageSource.camera),
+                      label: const Text('Camera'),
+                      icon: const Icon(Icons.camera),
+                    ),
                   ),
                 ),
               ],
@@ -111,7 +121,7 @@ class AddVehicleFormState extends State<AddVehicleForm> {
                                     }
                                   });
                                 },
-                                child: const Text('Login')),
+                                child: const Text('Add Vehicle')),
                           ),
                           Container(
                             padding: const EdgeInsets.all(20.0),
@@ -123,8 +133,8 @@ class AddVehicleFormState extends State<AddVehicleForm> {
                         ],
                       );
                     } else if (snapshot.hasData) {
-                      var body = jsonDecode(snapshot.data.toString());
-                      Navigator.of(context).pop();
+                      String result = snapshot.data.toString();
+                      Navigator.of(context).pop(result);
                     }
                   }
                   return Container(

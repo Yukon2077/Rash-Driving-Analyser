@@ -2,12 +2,16 @@ import os
 import uuid
 import pickle
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+from sqlalchemy import func
+from sqlalchemy.engine.row import Row
 
 from werkzeug.datastructures import FileStorage
-from flask import current_app, make_response, request
+from flask import current_app, jsonify, make_response, request
 from flask_restful import reqparse, Resource
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
+from keras.models import load_model
 
 from .. import db, api, socketio
 from ..models import User, Vehicle, DrivingData
@@ -83,9 +87,30 @@ class VehicleApi(Resource):
                     user_id=user.user_id, vehicle_id=vehicle_id).first()
                 if vehicle:
                     data = DrivingData.query.filter_by(
-                        vehicle_id=vehicle.vehicle_id).all()
-                    # return the data too
-                    return make_response(row_to_dict(vehicle))
+                        vehicle_id=vehicle.vehicle_id).order_by(DrivingData.data_id.desc()).all()
+                    number_of_incidents_per_day = db.session.query(func.DATE(DrivingData.datetime), func.count('*')).filter(DrivingData.is_rash == True or DrivingData.is_rash == 1).group_by(func.DATE(DrivingData.datetime)).all()
+                    number_of_incidents_per_day.pop(0)
+                    current_app.logger.info(number_of_incidents_per_day)
+                    line_chart_data = number_of_incidents_per_day
+                    number_of_incidents_per_day =  [[row[1]] for row in number_of_incidents_per_day]
+                    scaler = MinMaxScaler(feature_range=(0, 1))
+                    scaled_data = scaler.fit_transform(number_of_incidents_per_day)
+                    path = current_app.config['UPLOAD_FOLDER']
+                    parent_dir = os.path.dirname(path)
+                    model = load_model(parent_dir + '/models/' + str(vehicle_id) + '.h5')
+                    prediction = model.predict(scaled_data)
+                    prediction_for_tomorrow = int(prediction[-1][0]*100)
+                    vehicle = row_to_dict(vehicle)
+                    data = [i.to_dict() for i in data]
+                    line_chart_data = [{'date': str(result[0]), 'count': result[1]} for result in line_chart_data]
+                    
+                    response = {
+                        "vehicle":vehicle,
+                        "prediction_for_tomorrow": prediction_for_tomorrow,
+                        "line_chart_data": line_chart_data,
+                        "data": data,
+                    }
+                    return make_response(response)
                 else:
                     return make_response({'code': 2, 'message': 'Vehicle not found'}, 404)
             else:

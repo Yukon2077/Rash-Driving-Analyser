@@ -37,3 +37,31 @@ print(accuracy)
 
 with open('model.pickle', 'wb') as data_file:
     pickle.dump(model, data_file)
+
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+
+# assuming y_test and y_pred are binary labels for a classification problem
+accuracy = accuracy_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+
+metrics = [accuracy, f1, precision, recall]
+metric_names = ['Accuracy', 'F1 Score', 'Precision', 'Recall']
+
+# create bar chart
+fig, ax = plt.subplots()
+ax.bar(metric_names, metrics, color='green')
+
+# add labels and title
+ax.set_xlabel('Metrics')
+ax.set_ylabel('Score')
+ax.set_title('Model Evaluation Metrics')
+
+# add numbers to bars
+for i, v in enumerate(metrics):
+    ax.text(i, v + 0.01, str(round(v, 3)), ha='center')
+
+# show plot
+plt.show()
