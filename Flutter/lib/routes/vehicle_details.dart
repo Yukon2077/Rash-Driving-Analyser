@@ -97,14 +97,21 @@ class VehicleDetailState extends State<VehicleDetail> {
                     ),
                   ),
                   Container(
+                    height: 400,
                     margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                     child: Card(
                       child: SfCartesianChart(
+                          legend: Legend(
+                            isVisible: true,
+                            position: LegendPosition.bottom,
+                          ),
                           title:
                               ChartTitle(text: 'Number of incidents per day'),
                           primaryXAxis: DateTimeAxis(
+                              title: AxisTitle(text: 'Days'),
                               intervalType: DateTimeIntervalType.days),
                           primaryYAxis: NumericAxis(
+                            title: AxisTitle(text: 'Incidents'),
                             desiredIntervals: 5,
                             rangePadding: ChartRangePadding.round,
                           ),
@@ -113,7 +120,11 @@ class VehicleDetailState extends State<VehicleDetail> {
                             LineSeries<ChartData, DateTime>(
                                 dataSource: chartData,
                                 xValueMapper: (ChartData data, _) => data.x,
-                                yValueMapper: (ChartData data, _) => data.y)
+                                yValueMapper: (ChartData data, _) => data.y,
+                                markerSettings:
+                                    const MarkerSettings(isVisible: true),
+                                dataLabelSettings:
+                                    const DataLabelSettings(isVisible: true))
                           ]),
                     ),
                   ),
@@ -143,8 +154,12 @@ class VehicleDetailState extends State<VehicleDetail> {
                             Marker(
                               point:
                                   LatLng(lastKnownLatitude, lastKnownLongitude),
-                              builder: (context) =>
-                                  const Icon(Icons.location_pin, size: 36),
+                              anchorPos: AnchorPos.align(AnchorAlign.top),
+                              builder: (context) => const Icon(
+                                Icons.location_on,
+                                size: 32,
+                                color: Colors.blueAccent,
+                              ),
                             ),
                           ],
                         ),

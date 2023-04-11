@@ -90,7 +90,7 @@ class VehicleApi(Resource):
                         vehicle_id=vehicle.vehicle_id).order_by(DrivingData.data_id.desc()).all()
                     number_of_incidents_per_day = db.session.query(func.DATE(DrivingData.datetime), func.count('*')).filter(DrivingData.is_rash == True or DrivingData.is_rash == 1).group_by(func.DATE(DrivingData.datetime)).all()
                     number_of_incidents_per_day.pop(0)
-                    current_app.logger.info(number_of_incidents_per_day)
+                    # current_app.logger.info(number_of_incidents_per_day)
                     line_chart_data = number_of_incidents_per_day
                     number_of_incidents_per_day =  [[row[1]] for row in number_of_incidents_per_day]
                     scaler = MinMaxScaler(feature_range=(0, 1))

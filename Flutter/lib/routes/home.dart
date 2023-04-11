@@ -57,10 +57,19 @@ class HomeState extends State<Home> {
                   return RefreshIndicator(
                       onRefresh: _refresh,
                       child: snapshot.hasError
-                          ? Text(
-                              snapshot.error.toString(),
-                              textAlign: TextAlign.center,
-                            )
+                          ? ListView(
+                            children: [
+                              Container(
+                                height: MediaQuery.of(context).size.height - 2 * AppBar().preferredSize.height,
+                                child: Center(
+                                  child: Text(
+                                      snapshot.error.toString(),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                ),
+                              ),
+                            ],
+                          )
                           : vehicles.isEmpty
                               ? const Text('No Vehicles Added Yet')
                               : ListView.builder(
