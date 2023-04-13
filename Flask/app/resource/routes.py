@@ -88,7 +88,7 @@ class VehicleApi(Resource):
                 if vehicle:
                     data = DrivingData.query.filter_by(
                         vehicle_id=vehicle.vehicle_id).order_by(DrivingData.data_id.desc()).all()
-                    number_of_incidents_per_day = db.session.query(func.DATE(DrivingData.datetime), func.count('*')).filter(DrivingData.is_rash == True or DrivingData.is_rash == 1).group_by(func.DATE(DrivingData.datetime)).all()
+                    number_of_incidents_per_day = db.session.query(func.DATE(DrivingData.datetime), func.count('*')).filter(DrivingData.is_rash == True or DrivingData.is_rash == 1).filter_by(vehicle_id=vehicle.vehicle_id).group_by(func.DATE(DrivingData.datetime)).all()
                     number_of_incidents_per_day.pop(0)
                     # current_app.logger.info(number_of_incidents_per_day)
                     line_chart_data = number_of_incidents_per_day

@@ -131,6 +131,7 @@
 		</div> -->
 
 		<div class="card-analysis">
+			{% if number_of_incidents_per_day %}
 			<div id="LineChart" class="card-image"></div>
 			<script type="text/javascript">
 				google.charts.load('current', { packages: ['corechart', 'line'] });
@@ -167,13 +168,32 @@
 				}
 
 			</script>
+			{% else %}
+			<div class="text-center icon-text">
+				<div>
+					<i class="bi-dash-circle icon-display"></i>
+					<h3>No incidents occured till now</h3>
+				</div>
+			</div>
+			{% endif %}
 		</div>
 
+		{% if (prediction_for_tomorrow != -1) %}
 		<div class="card-analysis {% if prediction_for_tomorrow > 75 %}high-risk{% elif prediction_for_tomorrow > 50 %}medium-risk{% else %}low-risk{% endif %}">
 			<div id="PredictionForTomorrow">
 				{{ prediction_for_tomorrow }}% risk for tomorrow
 			</div>
 		</div>
+		{% else %}
+		<div class="card-analysis">
+			<div class="text-center icon-text">
+				<div>
+					<i class="bi-dash-circle icon-display"></i>
+					<h3>No incidents occured till now</h3>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
 	</div>
 </section>
@@ -239,20 +259,31 @@
 					});
 
 				</script>
-				{% for i in data %}
+				{% if data %}
+					{% for i in data %}
 
-				<tr>
-					<td>{{ i.data_id }}</td>
-					<td>{{ i.driving_vehicle_speed }}</td>
-					<td>{{ i.nearby_vehicle_speed }}</td>
-					<td>{{ i.nearby_vehicle_distance }}</td>
-					<td><a href="https://www.google.com/maps/search/?api=1&query={{ i.latitude }}%2C{{ i.longitude }}"
-							target="_blank"><i class="bi bi-geo-alt-fill"></i></a> {{ i.latitude }} | {{ i.longitude }}
-					</td>
-					<td>{{ i.is_rash }}</td>
-				</tr>
+					<tr>
+						<td>{{ i.data_id }}</td>
+						<td>{{ i.driving_vehicle_speed }}</td>
+						<td>{{ i.nearby_vehicle_speed }}</td>
+						<td>{{ i.nearby_vehicle_distance }}</td>
+						<td><a href="https://www.google.com/maps/search/?api=1&query={{ i.latitude }}%2C{{ i.longitude }}"
+								target="_blank"><i class="bi bi-geo-alt-fill"></i></a> {{ i.latitude }} | {{ i.longitude }}
+						</td>
+						<td>{{ i.is_rash }}</td>
+					</tr>
 
-				{% endfor %}
+					{% endfor %}
+				{% else %}
+				<div>
+					<div class="text-center icon-text">
+						<div>
+							<i class="bi-dash-circle icon-display"></i>
+							<h3>No incidents occured till now</h3>
+						</div>
+					</div>
+				</div>
+				{% endif %}
 			</tbody>
 
 		</table>
