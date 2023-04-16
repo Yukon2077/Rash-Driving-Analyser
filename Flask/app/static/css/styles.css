@@ -40,7 +40,7 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	
+
 }
 
 .display h1 {
@@ -52,7 +52,12 @@ body {
 	margin: 8px 0px 16px 0px;
 }
 
-h1, h2, h3, h4, h5, h6{
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-family: 'Montserrat', sans-serif;
 	margin: 16px 8px;
 }
@@ -193,7 +198,8 @@ footer {
 	text-align: right;
 }
 
-.button, .file-upload-box::file-selector-button {
+.button,
+.file-upload-box::file-selector-button {
 	display: inline-block;
 	color: black;
 	text-decoration: none;
@@ -206,20 +212,23 @@ footer {
 	box-sizing: border-box;
 }
 
-.button:hover, .file-upload-box::file-selector-button:hover {
+.button:hover,
+.file-upload-box::file-selector-button:hover {
 	box-shadow: 0px 0px 8px #557799;
 	background-color: #BBDDFF;
 	transform: scale(1.05);
 }
 
-.button:focus, .file-upload-box::file-selector-button:focus {
+.button:focus,
+.file-upload-box::file-selector-button:focus {
 	outline: #557799 solid 1px;
 	background-color: #BBDDFF;
 	box-shadow: 0px 0px 16px #557799;
 	transform: scale(1.05);
 }
 
-.button:active, .file-upload-box::file-selector-button:active {
+.button:active,
+.file-upload-box::file-selector-button:active {
 	background-color: #BBDDFF;
 	padding: 12px;
 	box-shadow: 0px 0px 0px #557799;
@@ -276,7 +285,8 @@ footer {
 	padding: 8px;
 }
 
-#login-button, #register-button {
+#login-button,
+#register-button {
 	width: 100%;
 	margin: 12px 0px;
 	max-width: 400px;
@@ -357,6 +367,7 @@ footer {
 	font-size: 56px;
 	border-radius: 240px;
 }
+
 .card-table {
 	padding: 12px;
 	width: 100%;
@@ -368,7 +379,8 @@ table {
 	border-collapse: collapse;
 }
 
-td, th {
+td,
+th {
 	padding: 6px;
 	border: #557799 solid 1px;
 }
@@ -410,13 +422,14 @@ td, th {
 }
 
 .low-risk {
-	background-color: rgba(82, 255, 47, 0.85);
+	background-color: rgba(47, 255, 25, 0.85);
 }
 
 #PredictionForTomorrow {
 	font-family: 'Montserrat', sans-serif;
+	padding: 24px;
 	font-weight: 800;
-	font-size: 64px;
+	font-size: 48px;
 	text-align: center;
 	align-self: center;
 }

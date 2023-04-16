@@ -4,7 +4,6 @@ from flask import current_app
 
 from .. import socketio
 from flask_socketio import emit, join_room, leave_room
-from ..models import DrivingData
 
 
 @socketio.on('connect')

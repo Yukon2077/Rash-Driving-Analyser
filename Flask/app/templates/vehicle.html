@@ -29,6 +29,76 @@
 	<h2>Analysis</h2>
 	<div class="grid-analysis-list">
 
+		{% if (prediction_for_tomorrow != -1) %}
+		<div
+			class="card-analysis {% if prediction_for_tomorrow > 100 %}high-risk{% elif prediction_for_tomorrow > 50 %}medium-risk{% else %}low-risk{% endif %}">
+			<div id="PredictionForTomorrow">
+				Predicted number of incidents for tomorrow: {{ prediction_for_tomorrow }}
+			</div>
+		</div>
+		{% else %}
+		<div class="card-analysis">
+			<div class="text-center icon-text">
+				<div>
+					<i class="bi-dash-circle icon-display"></i>
+					<h3>Not enough data to predict future</h3>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+		<div class="card-analysis">
+			{% if number_of_incidents_per_day %}
+			<div id="LineChart" class="card-image"></div>
+			<script type="text/javascript">
+				google.charts.load('current', { packages: ['corechart', 'line'] });
+				google.charts.setOnLoadCallback(drawBasic);
+				var data;
+				var chart;
+				var options;
+
+				function drawBasic() {
+
+					data = new google.visualization.DataTable();
+					data.addColumn('date', 'Date');
+					data.addColumn('number', 'Incidents');
+
+					data.addRows([
+						{% for i in number_of_incidents_per_day %}
+				[new Date(Date.parse("{{ i[0] }}")), {{ i[1] }}],
+					{% endfor %}
+					]);
+
+				options = {
+					pointSize: 8,
+					lineWidth: 3,
+					backgroundColor: {
+						fillOpacity: 0,
+					},
+					hAxis: {
+						title: 'Date'
+					},
+					vAxis: {
+						title: 'Incidents'
+					}
+				};
+
+				chart = new google.visualization.LineChart(document.getElementById('LineChart'));
+
+				chart.draw(data, options);
+				}
+
+			</script>
+			{% else %}
+			<div class="text-center icon-text">
+				<div>
+					<i class="bi-dash-circle icon-display"></i>
+					<h3>No incidents occured till now</h3>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+
 		<div class="card-analysis">
 			{% if data %}
 			<!-- <iframe
@@ -36,8 +106,7 @@
 				width="100%" height="100%" frameborder="0"
 				style="border:0; padding-top:12px; padding-left:12px; padding-right:12px;" allowfullscreen>
 			</iframe> -->
-			<div id="map"
-				style="border:0; margin-top:12px; margin-left:12px; margin-right:12px;">
+			<div id="map" style="border:0; margin-top:12px; margin-left:12px; margin-right:12px;">
 			</div>
 			<h3 class="text-center">Last known location</h3>
 			<script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -52,7 +121,8 @@
 					attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
 				}).addTo(map);
 
-				L.marker([LATITUDE, LONGITUDE]).addTo(map);
+				var marker = L.marker([LATITUDE, LONGITUDE]);
+				marker.addTo(map);
 			</script>
 
 			{% else %}
@@ -65,136 +135,6 @@
 			{% endif %}
 		</div>
 
-		<!-- <div class="card-analysis">
-			<div id="PieChart" class="card-image"></div>
-			<script type="text/javascript">
-
-				google.charts.load('current', { 'packages': ['corechart'] });
-				google.charts.setOnLoadCallback(drawChart);
-
-				function drawChart() {
-					var data = new google.visualization.DataTable();
-					data.addColumn('string', 'Incidents');
-					data.addColumn('number', 'Count');
-					data.addRows([
-						['Close Calls', 8],
-						['Excessive Speeding', 4],
-						['Hard Cornering', 3],
-						['Quick Starts', 2],
-						['Harsh Braking', 3]
-					]);
-
-					var options = {
-						'title': 'What Kind Of Many Incidents Happened',
-						backgroundColor: {
-							fillOpacity: 0,
-						},
-					};
-
-					var chart = new google.visualization.PieChart(document.getElementById('PieChart'));
-					chart.draw(data, options);
-				}
-			</script>
-		</div>
-
-		<div class="card-analysis">
-			<div id="BarChart" class="card-image"></div>
-			<script type="text/javascript">
-
-				google.charts.load('current', { 'packages': ['corechart'] });
-				google.charts.setOnLoadCallback(drawChart);
-
-				function drawChart() {
-					var data = new google.visualization.DataTable();
-					data.addColumn('string', 'Incidents');
-					data.addColumn('number', 'Count');
-					data.addRows([
-						['Close Calls', 8],
-						['Excessive Speeding', 4],
-						['Hard Cornering', 3],
-						['Quick Starts', 2],
-						['Harsh Braking', 3]
-					]);
-
-					var options = {
-						'title': 'What Kind Of Many Incidents Happened',
-						backgroundColor: {
-							fillOpacity: 0,
-						},
-					};
-
-					var chart = new google.visualization.BarChart(document.getElementById('BarChart'));
-					chart.draw(data, options);
-					
-				}
-			</script>
-		</div> -->
-
-		<div class="card-analysis">
-			{% if number_of_incidents_per_day %}
-			<div id="LineChart" class="card-image"></div>
-			<script type="text/javascript">
-				google.charts.load('current', { packages: ['corechart', 'line'] });
-				google.charts.setOnLoadCallback(drawBasic);
-
-				function drawBasic() {
-
-					var data = new google.visualization.DataTable();
-					data.addColumn('date', 'Date');
-					data.addColumn('number', 'Incidents');
-
-					data.addRows([
-					{% for i in number_of_incidents_per_day %}
-						[new Date(Date.parse("{{ i[0] }}")), {{ i[1] }}],
-					{% endfor %}
-					]);
-
-					var options = {
-						lineWidth: 3,
-						backgroundColor: {
-							fillOpacity: 0,
-						},
-						hAxis: {
-							title: 'Date'
-						},
-						vAxis: {
-							title: 'Incidents'
-						}
-					};
-
-					var chart = new google.visualization.LineChart(document.getElementById('LineChart'));
-
-					chart.draw(data, options);
-				}
-
-			</script>
-			{% else %}
-			<div class="text-center icon-text">
-				<div>
-					<i class="bi-dash-circle icon-display"></i>
-					<h3>No incidents occured till now</h3>
-				</div>
-			</div>
-			{% endif %}
-		</div>
-
-		{% if (prediction_for_tomorrow != -1) %}
-		<div class="card-analysis {% if prediction_for_tomorrow > 75 %}high-risk{% elif prediction_for_tomorrow > 50 %}medium-risk{% else %}low-risk{% endif %}">
-			<div id="PredictionForTomorrow">
-				{{ prediction_for_tomorrow }}% risk for tomorrow
-			</div>
-		</div>
-		{% else %}
-		<div class="card-analysis">
-			<div class="text-center icon-text">
-				<div>
-					<i class="bi-dash-circle icon-display"></i>
-					<h3>No incidents occured till now</h3>
-				</div>
-			</div>
-		</div>
-		{% endif %}
-
 	</div>
 </section>
 
@@ -202,6 +142,7 @@
 	<h2>Raw Driving Data</h2>
 	<div class="card-table">
 		<table>
+			{% if data %}
 			<thead>
 				<tr>
 					<th>Data id</th>
@@ -212,6 +153,7 @@
 					<th>Is Rash?</th>
 				</tr>
 			</thead>
+			{% endif %}
 
 			<tbody id="table-body">
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
@@ -222,7 +164,7 @@
 					var vehicle_id = {{ vehicle.vehicle_id }};
 
 					socket.on('connect', () => {
-						console.log('connected!');
+						console.log('connected! this is ' + vehicle_id);
 						socket.emit('join', vehicle_id);
 					});
 
@@ -230,7 +172,8 @@
 						console.log('entered room!');
 					});
 
-					socket.on('new_data', (data) => {
+					socket.on('new_data', (driving_data) => {
+
 						var table_body = document.getElementById('table-body');
 						var row = table_body.insertRow(0);
 						var cell_data_id = row.insertCell(0);
@@ -240,40 +183,61 @@
 						var cell_location = row.insertCell(4);
 						var cell_is_rash = row.insertCell(5);
 
-						cell_data_id.innerHTML = data.data_id;
-						cell_driving_vehicle_speed.innerHTML = data.driving_vehicle_speed;
-						cell_nearby_vehicle_speed.innerHTML = data.nearby_vehicle_speed;
-						cell_nearby_vehicle_distance.innerHTML = data.nearby_vehicle_distance;
-						cell_location.innerHTML = "<a href=\"https://www.google.com/maps/search/?api=1&query=" + data.latitude + "%2C" + data.longitude + "\" target=\"_blank\"><i class=\"bi bi-geo-alt-fill\"></i></a>" + data.latitude + " | " + data.longitude;
-						cell_is_rash.innerHTML = data.is_rash;
+						cell_data_id.innerHTML = driving_data.data_id;
+						cell_driving_vehicle_speed.innerHTML = driving_data.driving_vehicle_speed;
+						cell_nearby_vehicle_speed.innerHTML = driving_data.nearby_vehicle_speed;
+						cell_nearby_vehicle_distance.innerHTML = driving_data.nearby_vehicle_distance;
+						cell_location.innerHTML = "<a href=\"https://www.google.com/maps/search/?api=1&query=" + driving_data.latitude + "%2C" + driving_data.longitude + "\" target=\"_blank\"><i class=\"bi bi-geo-alt-fill\"></i></a>" + driving_data.latitude + " | " + driving_data.longitude;
+						cell_is_rash.innerHTML = driving_data.is_rash;
 
-						var LATITUDE = data.latitude;
-						var LONGITUDE = data.longitude;
-						var map = L.map('map').setView([LATITUDE, LONGITUDE], 14);
+						var drivingDate = new Date(Date.parse(driving_data.datetime.split(" ")[0]));
 
-						L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-							attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-						}).addTo(map);
+						var targetIndex = -1;
 
-						L.marker([LATITUDE, LONGITUDE]).addTo(map);
+						for (var i = 0; i < data.getNumberOfRows(); i++) {
+							var date = data.getValue(i, 0);
+							if (JSON.stringify(date) == JSON.stringify(drivingDate)) {
+								targetIndex = i;
+								break;
+							}
+						}
+
+						if (driving_data.is_rash == "True") {
+							if (targetIndex != -1) {
+								var Nrash = data.getValue(targetIndex, 1);
+								data.setValue(targetIndex, 1, Nrash + 1);
+							} else {
+								data.addRows([drivingDate, 1]);
+							}
+						}
+
+						chart.draw(data, options);
+
+						var LATITUDE = driving_data.latitude;
+						var LONGITUDE = driving_data.longitude;
+
+						map.setView([LATITUDE, LONGITUDE], 14);
+						marker.remove();
+						marker = L.marker([LATITUDE, LONGITUDE]);
+						marker.addTo(map);
 					});
 
 				</script>
 				{% if data %}
-					{% for i in data %}
+				{% for i in data %}
 
-					<tr>
-						<td>{{ i.data_id }}</td>
-						<td>{{ i.driving_vehicle_speed }}</td>
-						<td>{{ i.nearby_vehicle_speed }}</td>
-						<td>{{ i.nearby_vehicle_distance }}</td>
-						<td><a href="https://www.google.com/maps/search/?api=1&query={{ i.latitude }}%2C{{ i.longitude }}"
-								target="_blank"><i class="bi bi-geo-alt-fill"></i></a> {{ i.latitude }} | {{ i.longitude }}
-						</td>
-						<td>{{ i.is_rash }}</td>
-					</tr>
+				<tr>
+					<td>{{ i.data_id }}</td>
+					<td>{{ i.driving_vehicle_speed }}</td>
+					<td>{{ i.nearby_vehicle_speed }}</td>
+					<td>{{ i.nearby_vehicle_distance }}</td>
+					<td><a href="https://www.google.com/maps/search/?api=1&query={{ i.latitude }}%2C{{ i.longitude }}"
+							target="_blank"><i class="bi bi-geo-alt-fill"></i></a> {{ i.latitude }} | {{ i.longitude }}
+					</td>
+					<td>{{ i.is_rash }}</td>
+				</tr>
 
-					{% endfor %}
+				{% endfor %}
 				{% else %}
 				<div>
 					<div class="text-center icon-text">
