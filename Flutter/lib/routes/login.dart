@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'package:rash_driving_analyser/forms/login_form.dart';
 
 class Login extends StatelessWidget {
@@ -13,15 +15,18 @@ class Login extends StatelessWidget {
         children: [
           Container(
             margin: const EdgeInsets.fromLTRB(12, 0, 12, 48),
-            child: const Text(
+            child: Text(
               'Rash Driving Analyser',
-              style: TextStyle(fontSize: 56),
+              style: GoogleFonts.montserrat(
+                  textStyle: const TextStyle(
+                      fontSize: 56, fontWeight: FontWeight.w500)),
               textAlign: TextAlign.center,
             ),
           ),
           const LoginForm(),
           TextButton(
-              child: const Text('Don\'t have an account? Click here to register'),
+              child:
+                  const Text('Don\'t have an account? Click here to register'),
               onPressed: () => register(context)),
         ],
       ),

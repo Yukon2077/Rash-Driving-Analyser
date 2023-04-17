@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:rash_driving_analyser/models/vehicle_model.dart';
@@ -68,9 +70,13 @@ class VehicleDetailState extends State<VehicleDetail> {
                     i < vehicleData['line_chart_data'].length;
                     i++) {
                   var data = vehicleData['line_chart_data'][i];
-                  var chartPoint =
-                      ChartData(DateTime.parse(data['date']), data['count']);
-                  chartData.add(chartPoint);
+                  try {
+                    var chartPoint =
+                        ChartData(DateTime.parse(data['date']), data['count']);
+                    chartData.add(chartPoint);
+                  } catch (exception) {
+                    debugPrint(exception.toString());
+                  }
                 }
 
                 return ListView(children: [
@@ -83,16 +89,23 @@ class VehicleDetailState extends State<VehicleDetail> {
                           : (int.parse(predictionForTomorrow) > 50)
                               ? Colors.yellow
                               : Colors.green,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            '$predictionForTomorrow% risk for tomorrow',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 64),
-                          ),
-                        ],
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Our prediction is that $predictionForTomorrow incidents may occur tomorrow.",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 48),
+                            ),
+                            const Text(
+                                "Please remember that our prediction is not a guarantee and there are many factors that can influence the actual number of incidents.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 16))
+                          ],
+                        ),
                       ),
                     ),
                   ),

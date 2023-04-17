@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'package:rash_driving_analyser/forms/register_form.dart';
 
 class Register extends StatelessWidget {
@@ -13,9 +15,11 @@ class Register extends StatelessWidget {
         children: [
           Container(
             margin: const EdgeInsets.all(12),
-            child: const Text(
-              'Register',
-              style: TextStyle(fontSize: 36),
+            child: Text(
+              'Rash Driving Analyser',
+              style: GoogleFonts.montserrat(
+                  textStyle: const TextStyle(
+                      fontSize: 56, fontWeight: FontWeight.w500)),
               textAlign: TextAlign.center,
             ),
           ),

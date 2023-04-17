@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split    
 from sklearn.ensemble import RandomForestClassifier
@@ -47,21 +48,34 @@ f1 = f1_score(y_test, y_pred)
 precision = precision_score(y_test, y_pred)
 recall = recall_score(y_test, y_pred)
 
-metrics = [accuracy, f1, precision, recall]
-metric_names = ['Accuracy', 'F1 Score', 'Precision', 'Recall']
+models = np.array(["Our Random Forest Model", "RF Model from the paper \"Comparing Algorithms for Aggressive Driving Event Detection Based on Vehicle Motion Data\""])
+metrics = np.array(["Accuracy", "F1 Score", "Precision", "Recall"])
+data = np.array([[0.96, 0.96, 0.90, 0.93], [0.95, 0.90, 0.90, 0.90]])
 
-# create bar chart
+bar_width = 0.35
+r1 = np.arange(len(metrics))
+r2 = [x + bar_width for x in r1]
+
 fig, ax = plt.subplots()
-ax.bar(metric_names, metrics, color='green')
 
-# add labels and title
+bars1 = ax.bar(r1, data[0], color='blue', width=bar_width, edgecolor='white', label=models[0])
+bars2 = ax.bar(r2, data[1], color='lightblue', width=bar_width, edgecolor='white', label=models[1])
+
 ax.set_xlabel('Metrics')
 ax.set_ylabel('Score')
 ax.set_title('Model Evaluation Metrics')
 
-# add numbers to bars
-for i, v in enumerate(metrics):
-    ax.text(i, v + 0.01, str(round(v, 3)), ha='center')
+ax.set_xticks([r + bar_width/2 for r in range(len(metrics))])
+ax.set_xticklabels(metrics)
 
-# show plot
+for bar in bars1 + bars2:
+    height = bar.get_height()
+    ax.annotate('{:.2f}'.format(height),
+                xy=(bar.get_x() + bar.get_width() / 2, height),
+                xytext=(0, 3),
+                textcoords="offset points",
+                ha='center', va='bottom')
+
+ax.legend(loc='lower center')
+
 plt.show()

@@ -1,4 +1,3 @@
-from sklearn.metrics import accuracy_score, recall_score, f1_score
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,7 +9,7 @@ from keras.layers import LSTM, Dense
 df = pd.read_csv('preprocessed_data.csv', parse_dates=['datetime'])
 df = df.set_index('datetime')
 print(df.head())
-
+print(df)
 scaler = MinMaxScaler(feature_range=(0, 1))
 data = scaler.fit_transform(df)
 
@@ -29,6 +28,7 @@ look_back = 1
 train_X, train_Y = create_dataset(train_data, look_back)
 test_X, test_Y = create_dataset(test_data, look_back)
 
+print("\n\n\ntrain_X START\n\n\n" + str(train_X) + "\n\n\ntrain_X END\n\n\n")
 train_X = np.reshape(train_X, (train_X.shape[0], train_X.shape[1], 1))
 test_X = np.reshape(test_X, (test_X.shape[0], test_X.shape[1], 1))
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:rash_driving_analyser/routes/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import 'package:rash_driving_analyser/routes/testing.dart';
 import 'package:rash_driving_analyser/routes/add_vehicle.dart';
 import 'package:rash_driving_analyser/routes/home.dart';
 import 'package:rash_driving_analyser/routes/login.dart';
@@ -37,6 +38,7 @@ class App extends StatelessWidget {
         '/profile': (context) => const Profile(),
         '/testing': (context) => Testing(),
       },
+      theme: ThemeData(textTheme: GoogleFonts.firaSansTextTheme()),
     );
   }
 }
