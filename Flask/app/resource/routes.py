@@ -139,7 +139,7 @@ class VehicleApi(Resource):
                         "line_chart_data": line_chart_data,
                         "data": data,
                     }
-                    current_app.logger.debug("\n\n\n START \n\n\n" + str(response) + "\n\n\n END \n\n\n")
+                    # current_app.logger.debug("\n\n\n START \n\n\n" + str(response) + "\n\n\n END \n\n\n")
                     return make_response(response)
                 else:
                     return make_response({'code': 2, 'message': 'Vehicle not found'}, 404)

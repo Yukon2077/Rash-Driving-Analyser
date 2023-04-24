@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:rash_driving_analyser/models/vehicle_model.dart';
+import 'package:rash_driving_analyser/widgets/error_card.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_map/flutter_map.dart';
 
@@ -58,11 +57,48 @@ class VehicleDetailState extends State<VehicleDetail> {
                   return Text(snapshot.error.toString());
                 }
                 dynamic vehicleData = snapshot.data;
-                var lastKnownLatitude = vehicleData['data'][0]['latitude'];
-                var lastKnownLongitude = vehicleData['data'][0]['longitude'];
 
                 var predictionForTomorrow =
                     vehicleData['prediction_for_tomorrow'].toString();
+
+                Widget firstCard = const ErrorCard(
+                    errorText: 'Not enough data to predict future',
+                    icon: Icons.error_outline);
+
+                Widget secondCard = const ErrorCard(
+                    errorText: 'No incidents occured till now',
+                    icon: Icons.info_outline);
+
+                Widget thirdCard = const ErrorCard(
+                    errorText: 'Unknown location', icon: Icons.help_outline);
+
+                if (predictionForTomorrow != '-1') {
+                  firstCard = Card(
+                    color: (int.parse(predictionForTomorrow) > 75)
+                        ? Colors.red
+                        : (int.parse(predictionForTomorrow) > 50)
+                            ? Colors.yellow
+                            : Colors.green,
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Our prediction is that $predictionForTomorrow incidents may occur tomorrow.",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 48),
+                          ),
+                          const Text(
+                              "Please remember that our prediction is not a guarantee and there are many factors that can influence the actual number of incidents.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 16))
+                        ],
+                      ),
+                    ),
+                  );
+                }
 
                 final List<ChartData> chartData = [];
 
@@ -79,105 +115,89 @@ class VehicleDetailState extends State<VehicleDetail> {
                   }
                 }
 
+                if (chartData.isNotEmpty) {
+                  secondCard = SfCartesianChart(
+                      legend: Legend(
+                        isVisible: true,
+                        position: LegendPosition.bottom,
+                      ),
+                      title: ChartTitle(text: 'Number of incidents per day'),
+                      primaryXAxis: DateTimeAxis(
+                          title: AxisTitle(text: 'Days'),
+                          intervalType: DateTimeIntervalType.days),
+                      primaryYAxis: NumericAxis(
+                        title: AxisTitle(text: 'Incidents'),
+                        desiredIntervals: 5,
+                        rangePadding: ChartRangePadding.round,
+                      ),
+                      series: <ChartSeries>[
+                        // Render pie chart
+                        LineSeries<ChartData, DateTime>(
+                            dataSource: chartData,
+                            xValueMapper: (ChartData data, _) => data.x,
+                            yValueMapper: (ChartData data, _) => data.y,
+                            markerSettings:
+                                const MarkerSettings(isVisible: true),
+                            dataLabelSettings:
+                                const DataLabelSettings(isVisible: true))
+                      ]);
+                }
+
+                if ((vehicleData['data'] as List).isNotEmpty) {
+                  var lastKnownLatitude = vehicleData['data'][0]['latitude'];
+                  var lastKnownLongitude = vehicleData['data'][0]['longitude'];
+                  thirdCard = FlutterMap(
+                    options: MapOptions(
+                      center: LatLng(lastKnownLatitude, lastKnownLongitude),
+                      zoom: 15,
+                    ),
+                    nonRotatedChildren: [
+                      AttributionWidget.defaultWidget(
+                        source: 'OpenStreetMap contributors',
+                        onSourceTapped: null,
+                      ),
+                    ],
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.example.app',
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point:
+                                LatLng(lastKnownLatitude, lastKnownLongitude),
+                            anchorPos: AnchorPos.align(AnchorAlign.top),
+                            builder: (context) => const Icon(
+                              Icons.location_on,
+                              size: 32,
+                              color: Colors.blueAccent,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                }
+
                 return ListView(children: [
                   Container(
                     height: 400,
                     margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                    child: Card(
-                      color: (int.parse(predictionForTomorrow) > 75)
-                          ? Colors.red
-                          : (int.parse(predictionForTomorrow) > 50)
-                              ? Colors.yellow
-                              : Colors.green,
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Our prediction is that $predictionForTomorrow incidents may occur tomorrow.",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 48),
-                            ),
-                            const Text(
-                                "Please remember that our prediction is not a guarantee and there are many factors that can influence the actual number of incidents.",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 16))
-                          ],
-                        ),
-                      ),
-                    ),
+                    child: firstCard,
                   ),
                   Container(
                     height: 400,
                     margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                     child: Card(
-                      child: SfCartesianChart(
-                          legend: Legend(
-                            isVisible: true,
-                            position: LegendPosition.bottom,
-                          ),
-                          title:
-                              ChartTitle(text: 'Number of incidents per day'),
-                          primaryXAxis: DateTimeAxis(
-                              title: AxisTitle(text: 'Days'),
-                              intervalType: DateTimeIntervalType.days),
-                          primaryYAxis: NumericAxis(
-                            title: AxisTitle(text: 'Incidents'),
-                            desiredIntervals: 5,
-                            rangePadding: ChartRangePadding.round,
-                          ),
-                          series: <ChartSeries>[
-                            // Render pie chart
-                            LineSeries<ChartData, DateTime>(
-                                dataSource: chartData,
-                                xValueMapper: (ChartData data, _) => data.x,
-                                yValueMapper: (ChartData data, _) => data.y,
-                                markerSettings:
-                                    const MarkerSettings(isVisible: true),
-                                dataLabelSettings:
-                                    const DataLabelSettings(isVisible: true))
-                          ]),
+                      child: secondCard,
                     ),
                   ),
                   Container(
                     height: 400,
                     margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                    child: Card(
-                        child: FlutterMap(
-                      options: MapOptions(
-                        center: LatLng(lastKnownLatitude, lastKnownLongitude),
-                        zoom: 15,
-                      ),
-                      nonRotatedChildren: [
-                        AttributionWidget.defaultWidget(
-                          source: 'OpenStreetMap contributors',
-                          onSourceTapped: null,
-                        ),
-                      ],
-                      children: [
-                        TileLayer(
-                          urlTemplate:
-                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          userAgentPackageName: 'com.example.app',
-                        ),
-                        MarkerLayer(
-                          markers: [
-                            Marker(
-                              point:
-                                  LatLng(lastKnownLatitude, lastKnownLongitude),
-                              anchorPos: AnchorPos.align(AnchorAlign.top),
-                              builder: (context) => const Icon(
-                                Icons.location_on,
-                                size: 32,
-                                color: Colors.blueAccent,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )),
+                    child: Card(child: thirdCard),
                   ),
                 ]);
               }

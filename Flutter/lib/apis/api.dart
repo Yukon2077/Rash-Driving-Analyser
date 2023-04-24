@@ -26,7 +26,7 @@ class Api {
     if (response.statusCode >= 200 && response.statusCode < 400) {
       return response.body;
     } else {
-      throw jsonDecode(response.body).body['message'];
+      throw jsonDecode(response.body)['message'];
     }
   }
 
@@ -45,7 +45,7 @@ class Api {
     if (response.statusCode >= 200 && response.statusCode < 400) {
       return response.body;
     } else {
-      throw jsonDecode(response.body).body['message'];
+      throw jsonDecode(response.body)['message'];
     }
   }
 
